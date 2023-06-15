@@ -1,0 +1,33 @@
+{
+    "name": "julien-boudry/condorcet-module-skeleton",
+    "description": "Skeleton for Condorcet module development",
+    "type": "skeleton",
+    "require": {
+        "php": "^8.2",
+        "julien-boudry/condorcet": "^4.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.2",
+        "laravel/pint": "^1.10"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "pintify": "pint"
+    },
+    "scripts-descriptions": {
+        "test": "Run all tests!",
+        "pintify": "Run laravel Pint"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CondorcetPHP\\ModulesSkeletons\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Julien Boudry",
+            "email": "julien.boudry@gmail.com"
+        }
+    ]
+}
