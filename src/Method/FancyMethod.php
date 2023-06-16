@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace CondorcetPHP\ModulesSkeletons\Method;
+namespace FancyVoting\Method;
 
 use CondorcetPHP\Condorcet\Algo\Method;
 use CondorcetPHP\Condorcet\Algo\MethodInterface;
 
-class MyVerySimpleMethod extends Method implements MethodInterface
+class Fancy_Method extends Method implements MethodInterface
 {
     public const METHOD_NAME = [
-        'My Very Simple Method',
-        'My Very Simple Method first alias',
-        'My Very Simple Method Main another alias'
+        'Fancy Method'
     ];
 
     protected function compute(): void

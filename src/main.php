@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use CondorcetPHP\Condorcet\Condorcet;
 use CondorcetPHP\Condorcet\Election;
-use CondorcetPHP\ModulesSkeletons\Method\MyVerySimpleMethod;
+use FancyVoting\Method\Fancy_Method;
 
 require_once 'vendor/autoload.php';
 
-Condorcet::addMethod(MyVerySimpleMethod::class);
+Condorcet::addMethod(Fancy_Method::class);
 
 $election = new Election();
 
@@ -18,7 +18,7 @@ $election->addCandidate('C');
 
 $election->addVote('A>B>C');
 
-var_dump(MyVerySimpleMethod::METHOD_NAME[0]);
+var_dump(Fancy_Method::METHOD_NAME[0]);
 var_dump(
     $election->getResult('My Very Simple Method')->getResultAsString()
 );
