@@ -10,11 +10,16 @@ use EurovisionVoting\Contest;
 
 require_once 'vendor/autoload.php';
 
+if ($argv[1]===NULL) {
+    echo ("You must use a .cvotes file as the first argument. \n");
+    exit(0);
+}
+
 Condorcet::addMethod(EurovisionSchulze::class);
 
 $votesdata = new CondorcetElectionFormat($argv[1]);
 $contest = new Contest;
-$contest = $votesdata->setDataToAnElection();
+$contest = $votesdata->setDataToAnElection($contest);
 $contest->getPopulations();
 $contest->readData();
 

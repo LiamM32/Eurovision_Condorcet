@@ -23,18 +23,18 @@ class EurovisionSchulze extends Schulze_Core
 
     protected function schulzeVariant(int $i, int $j, Election $contest): int
     {
-        if($this->populations === NULL)
+        if($contest->populations === NULL)
         {
-            $this->populations = getPopulations();
+            $contest->populations = getPopulations();
         }
-        $nationalVotes = $election->getVotesManager();
+        $nationalVotes = $contest->getVotesManager();
         $nationalMargins = [];
-        $iCountry = $election->getCandidateObjectFromKey($i)->getName();
-        $jCountry = $election->getCandidateObjectFromKey($j)->getName();
+        $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
+        $jCountry = $contest->getCandidateObjectFromKey($j)->getName();
         
-        foreach ($election->populations as $country)
+        foreach ($contest->populations as $country)
         {
-            $filteredPairwise = $election->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
+            $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
             $nationalMargins[$country] = ( ( $filteredPairwise[$iCountry]['win'][$jName] - $filteredPairwise[$jCountry]['win'][$iName] ) * $this->populations[$country] )^(1/3);
         }
         
