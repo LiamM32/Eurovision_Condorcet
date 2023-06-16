@@ -6,7 +6,6 @@ namespace CondorcetPHP\ModulesSkeletons\Method;
 
 use CondorcetPHP\Condorcet\Algo\Method;
 use CondorcetPHP\Condorcet\Algo\MethodInterface;
-use CondorcetPHP\Condorcet\Vote;
 
 class MyVerySimpleMethod extends Method implements MethodInterface
 {
@@ -34,6 +33,10 @@ class MyVerySimpleMethod extends Method implements MethodInterface
             continue;
         }
 
+        # If no vote here, juste produce a global tie
+        $ranking ??= [array_keys($this->getElection()->getCandidatesList())];
+
+        # Create results
         $this->Result = $this->createResult($ranking);
     }
 
