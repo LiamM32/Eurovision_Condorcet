@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use CondorcetPHP\Condorcet\Condorcet;
 use CondorcetPHP\Condorcet\Console\CondorcetApplication;
 use CondorcetPHP\ModulesSkeletons\Method\MyVerySimpleMethod;
