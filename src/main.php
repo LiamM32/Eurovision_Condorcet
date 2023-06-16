@@ -6,7 +6,7 @@ use CondorcetPHP\Condorcet\Condorcet;
 use CondorcetPHP\Condorcet\Election;
 use CondorcetPHP\ModulesSkeletons\Method\MyVerySimpleMethod;
 
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 Condorcet::addMethod(MyVerySimpleMethod::class);
 
