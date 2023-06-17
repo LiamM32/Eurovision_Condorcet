@@ -1,7 +1,6 @@
 {
-    "name": "Eurovision-vote-counter",
     "description": "A program to count votes for the Eurovision song contest under a redesigned voting system.",
-    "type": "skeleton",
+    "type": "project",
     "require": {
         "php": "^8.2",
         "julien-boudry/condorcet": "dev-dev-4.5"

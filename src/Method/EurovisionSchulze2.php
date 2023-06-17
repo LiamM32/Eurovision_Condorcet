@@ -10,7 +10,7 @@ use EurovisionVoting\Contest;
 
 class EurovisionSchulze extends Schulze_Core
 {
-    public const METHOD_NAME = ['Eurovision Schulze', 'Grand Final', 'Grand Final 1.5-root'];
+    public const METHOD_NAME = ['Eurovision Schulze', 'Grand Final'];
 
     protected function schulzeVariant(int $i, int $j, Election $contest): int
     {
@@ -25,8 +25,6 @@ class EurovisionSchulze extends Schulze_Core
             
             $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
             var_dump($contest->populations[$country]);
-            echo("\n\$filteredPairwise = ");
-            //var_dump($filteredPairwise);
             $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
         }
         

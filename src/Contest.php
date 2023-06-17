@@ -14,6 +14,11 @@ class Contest extends Election
     {
         $this->votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
         $this->populations = json_decode(fread(fopen("populations.json", "r"), 8096), true);
+        foreach ($this->votingCountries as $country) {
+            if($this->populations[$country]===NULL) {
+                echo ("\nWarning: Population of " .$country." unknown\n");
+            }
+        }
         $this->populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
         //echo ("Here are the populations of voting countries:\n");
         //var_dump($this->populations);
