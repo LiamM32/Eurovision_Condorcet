@@ -11,31 +11,21 @@ use EurovisionVoting\Contest;
 class EurovisionSchulze extends Schulze_Core
 {
     public const METHOD_NAME = ['Eurovision Schulze', 'Grand Final'];
-    
-    function getPopulations()
-    {
-        $countries = json_decode(readfile("countries.json"), true);
-        $populations = json_decode(readfile("populations.json"), true);
-        $populations = array_intersect_key($population, $countries);
-        //var_dump(populations);
-        return $populations;
-    }
 
     protected function schulzeVariant(int $i, int $j, Election $contest): int
     {
-        if($contest->populations === NULL)
-        {
-            $contest->populations = getPopulations();
-        }
         $nationalVotes = $contest->getVotesManager();
         $nationalMargins = [];
         $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
         $jCountry = $contest->getCandidateObjectFromKey($j)->getName();
         
-        foreach ($contest->populations as $country)
+        foreach ($contest->votingCountries as $country)
         {
+            echo("\n\$country = ".$country."\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
+            
             $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
-            $nationalMargins[$country] = ( ( $filteredPairwise[$iCountry]['win'][$jName] - $filteredPairwise[$jCountry]['win'][$iName] ) * $this->populations[$country] )^(1/3);
+            var_dump($contest->populations[$country]);
+            $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
         }
         
         return array_sum($nationalMargins);

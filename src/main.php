@@ -23,6 +23,8 @@ $contest = $votesdata->setDataToAnElection($contest);
 $contest->getPopulations();
 $contest->readData();
 
+$contest->countVotersByCountry();
+
 /*$contestants = json_decode(fread(fopen("finalists.json", "r"), 512), true);
 foreach ($contestants as $country) {
     $contest->addCandidate($country);
