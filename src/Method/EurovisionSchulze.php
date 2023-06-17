@@ -21,15 +21,14 @@ class EurovisionSchulze extends Schulze_Core
         
         foreach ($contest->votingCountries as $country)
         {
-            echo("\n\$country = ".$country."\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
+            //echo("\n\$country = ".$country."\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
             
-            $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
-            var_dump($contest->populations[$country]);
-            echo("\n\$filteredPairwise = ");
-            //var_dump($filteredPairwise);
+            if($contest->votesbyCountry[$country] > 0) {
+                $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
+            }
             $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
         }
-        
+        //echo('Made it here!');
         return array_sum($nationalMargins);
     }
 
