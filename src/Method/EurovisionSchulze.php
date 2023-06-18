@@ -14,6 +14,7 @@ class EurovisionSchulze extends Schulze_Core
 
     protected function schulzeVariant(int $i, int $j, Election $contest): int
     {
+        echo("Starting EurovisionSchulze::schulzeVariant()\n");
         $nationalVotes = $contest->getVotesManager();
         $nationalMargins = [];
         $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
@@ -28,7 +29,7 @@ class EurovisionSchulze extends Schulze_Core
             }
             $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
         }
-        //echo('Made it here!');
+        echo('Compared '.$iCountry.' to '.$jCountry."\n");
         return array_sum($nationalMargins);
     }
 

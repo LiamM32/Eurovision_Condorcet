@@ -29,7 +29,7 @@ $contest->countVotersByCountry();
 foreach ($contestants as $country) {
     $contest->addCandidate($country);
 }*/
-
+echo('The entire contest has '.$contest->countVotes()." votes.\n");
 /*for ($v=0; $v<2048; $v++) {
     $vote = $contest->addVote($randomizer->getNewVote());
     $vote->addTags($contest->votingCountries[array_rand($contest->votingCountries, 1)]);
