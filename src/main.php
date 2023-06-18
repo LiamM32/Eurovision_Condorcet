@@ -15,6 +15,8 @@ if ($argv[1]===NULL) {
     exit(0);
 }
 
+ini_set('memory_limit', '2048M');
+
 Condorcet::addMethod(EurovisionSchulze::class);
 
 $votesdata = new CondorcetElectionFormat($argv[1]);

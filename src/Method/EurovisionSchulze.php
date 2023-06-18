@@ -15,12 +15,10 @@ class EurovisionSchulze extends Schulze_Core
     
     protected function getAllPairwise(Contest $contest)
     {
-        foreach ($contest->votingCountries as $country) {
-            if($contest->votesbyCountry[$country] > 0) {
-                $this->filteredPairwise[$country] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
-            }
+        foreach ($contest->votingCountries as $key=>$country) {
+            $this->filteredPairwise[$country] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
         }
-        echo("Finished getAllPairwise\n");
+        echo("Finished getAllPairwise()\n");
     }
 
     protected function schulzeVariant(int $i, int $j, Election $contest): int
@@ -29,19 +27,18 @@ class EurovisionSchulze extends Schulze_Core
             $this->getAllPairwise($contest);
         }
         
-        echo("Starting EurovisionSchulze::schulzeVariant()\n");
+        //echo("Starting EurovisionSchulze::schulzeVariant()\n");
         $nationalVotes = $contest->getVotesManager();
         $nationalMargins = [];
         $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
         $jCountry = $contest->getCandidateObjectFromKey($j)->getName();
-        echo("Going to start the foreach loop.\n");
+        //echo("Going to start the foreach loop.\n");
         foreach ($contest->votingCountries as $country)
         {
-            echo("\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
-            $filteredPairwise = $this->filteredPairwise[$country];
-            $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
+            $filteredMargin = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry]-$this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
+            $nationalMargins[$country] = ($filteredMargin * $contest->populations[$country] )^(1/3);
         }
-        echo('Compared '.$iCountry.' to '.$jCountry."\n");
+        //echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
         return array_sum($nationalMargins);
     }
 
