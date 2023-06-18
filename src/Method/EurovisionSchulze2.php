@@ -8,11 +8,11 @@ use CondorcetPHP\Condorcet\Algo\Methods\Schulze\Schulze_Core;
 use CondorcetPHP\Condorcet\Election;
 use EurovisionVoting\Contest;
 
-class EurovisionSchulze extends Schulze_Core
+class EurovisionSchulze2 extends Schulze_Core
 {
-    public const METHOD_NAME = ['Eurovision Schulze', 'Grand Final'];
+    public const METHOD_NAME = ['Eurovision Schulze 2', 'Grand Final square root'];
 
-    protected function schulzeVariant(int $i, int $j, Election $contest): int
+    protected function schulzeVariant(int $i, int $j, Election $contest): float
     {
         $nationalVotes = $contest->getVotesManager();
         $nationalMargins = [];
@@ -21,11 +21,10 @@ class EurovisionSchulze extends Schulze_Core
         
         foreach ($contest->votingCountries as $country)
         {
-            echo("\n\$country = ".$country."\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
-            
             $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
-            var_dump($contest->populations[$country]);
-            $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
+            echo("\n\$filteredPairwise = ");
+            var_dump($filteredPairwise);
+            $nationalMargins[$country] = ($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry])**(1/2);
         }
         
         return array_sum($nationalMargins);

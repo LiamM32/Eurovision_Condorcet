@@ -21,7 +21,7 @@ class EurovisionSchulze extends Schulze_Core
         echo("Finished getAllPairwise()\n");
     }
 
-    protected function schulzeVariant(int $i, int $j, Election $contest): int
+    protected function schulzeVariant(int $i, int $j, Election $contest): float
     {
         if(!isset($this->filteredPairwise)){
             $this->getAllPairwise($contest);
@@ -36,7 +36,7 @@ class EurovisionSchulze extends Schulze_Core
         foreach ($contest->votingCountries as $country)
         {
             $filteredMargin = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry]-$this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
-            $nationalMargins[$country] = ($filteredMargin * $contest->populations[$country] )^(1/3);
+            $nationalMargins[$country] = ($filteredMargin * $contest->populations[$country] )**(1/3);
         }
         //echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
         return array_sum($nationalMargins);
