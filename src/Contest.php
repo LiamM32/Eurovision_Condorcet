@@ -45,7 +45,7 @@ class Contest extends Election
                unset($this->votingCountries[$key]);
                echo("Removed from voting countries list\n");
            } elseif ($this->votesbyCountry[$country]>0 AND ($this->votesbyCountry[$country]*$this->populations[$country])^(1/3)/$this->votesbyCountry[$country] < $minRatio) {
-               $minRatio = ($this->votesbyCountry[$country]*$this->populations[$country])^(1/3)/$this->votesbyCountry[$country];
+               $minRatio = ($this->votesbyCountry[$country]*$this->populations[$country])**(1/3)/$this->votesbyCountry[$country];
                $minRatioCountry = $country;
                echo("\n");
            }

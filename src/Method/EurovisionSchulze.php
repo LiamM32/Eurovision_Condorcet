@@ -12,7 +12,7 @@ class EurovisionSchulze extends Schulze_Core
 {
     public const METHOD_NAME = ['Eurovision Schulze', 'Grand Final', 'Grand Final 1.5-root'];
 
-    protected function schulzeVariant(int $i, int $j, Election $contest): int
+    protected function schulzeVariant(int $i, int $j, Election $contest): float
     {
         echo("Starting EurovisionSchulze::schulzeVariant()\n");
         $nationalVotes = $contest->getVotesManager();
@@ -24,7 +24,7 @@ class EurovisionSchulze extends Schulze_Core
         {
             //echo("\n\$country = ".$country."\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
             $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
-            $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
+            $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )**(1/3);
         }
         echo('Compared '.$iCountry.' to '.$jCountry."\n");
         return array_sum($nationalMargins);
