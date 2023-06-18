@@ -37,13 +37,17 @@ class Contest extends Election
         $minRatio = 1.0;
         $minRatioCountry = '';
         //The population for WLD should be set to $votes['WLD']^2 * $this->populations[max] / ($votes[max])^2, with max being the country with lowest voting power per-capita.
-        foreach ($this->votingCountries as $country)
+        foreach ($this->votingCountries as $key=>$country)
         {
            $this->votesbyCountry[$country] = $this->countVotes($country);
-           echo($country.' has '. $this->countVotes($country)." voters.\n");
-           if ($this->votesbyCountry[$country]>0 AND ($this->votesbyCountry[$country]*$this->populations[$country])^(1/3)/$this->votesbyCountry[$country] < $minRatio) {
+           echo($country.' has '. $this->votesbyCountry[$country]." voters. ");
+           if ($this->votesbyCountry[$country] === 0) {
+               unset($this->votingCountries[$key]);
+               echo("Removed from voting countries list\n");
+           } elseif ($this->votesbyCountry[$country]>0 AND ($this->votesbyCountry[$country]*$this->populations[$country])^(1/3)/$this->votesbyCountry[$country] < $minRatio) {
                $minRatio = ($this->votesbyCountry[$country]*$this->populations[$country])^(1/3)/$this->votesbyCountry[$country];
                $minRatioCountry = $country;
+               echo("\n");
            }
         }
     }

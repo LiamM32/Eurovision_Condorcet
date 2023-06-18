@@ -23,10 +23,7 @@ class EurovisionSchulze extends Schulze_Core
         foreach ($contest->votingCountries as $country)
         {
             //echo("\n\$country = ".$country."\n\$contest->populations[".$country."] = ".$contest->populations[$country]."\n");
-            
-            if($contest->votesbyCountry[$country] > 0) {
-                $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
-            }
+            $filteredPairwise = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
             $nationalMargins[$country] = (($filteredPairwise[$iCountry]['win'][$jCountry] - $filteredPairwise[$jCountry]['win'][$iCountry] ) * $contest->populations[$country] )^(1/3);
         }
         echo('Compared '.$iCountry.' to '.$jCountry."\n");
