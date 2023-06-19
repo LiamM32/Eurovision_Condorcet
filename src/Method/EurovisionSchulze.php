@@ -35,10 +35,14 @@ class EurovisionSchulze extends Schulze_Core
         //echo("Going to start the foreach loop.\n");
         foreach ($contest->votingCountries as $country)
         {
-            $filteredMargin = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry]-$this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
-            $nationalMargins[$country] = ($filteredMargin * $contest->populations[$country] )**(1/3);
+            $rawMargin = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry]-$this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
+            if($contest->votesbyCountry[$country] > 0 AND $rawMargin != 0) {
+                $nationalMargins[$country] = $rawMargin * ($contest->populations[$country]/($contest->votesbyCountry[$country]*abs($rawMargin)))**(1/3);
+            } else {
+                $nationalMargins[$country] = 0;
+            }
         }
-        //echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
+        echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
         return array_sum($nationalMargins);
     }
 
