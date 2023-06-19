@@ -15,4 +15,12 @@ Another included .cvotes file is `grand-final-votes.cvotes`, but the program cur
 Countries eligible to vote are written in `voting-countries.json` as 3-letter codes.
 
 
-The voting method currently supported, called "Eurovision Schulze", each country's voting power is proportional to the cube root of vote margin times population. This is different from the current contest, where each participating country has equal voting weight. This formula effectively gives more influence to voters in less decisive countries, as a pairwise ratio of 9:16 is half as strong as a ratio of 1:0 (which means unanimous agreement to which entry is better). This may later be softened. This method will later be adjusted to not give excess weight to the world vote, where the ratio of population to voters would presumably be very high.
+The first method, called 'Eurovision Schulze' or 'Grand Final 1.5 root' gives each participating country a total voting strength proportional to the following formula:
+$$\sqrt[3]{[voters]×[population]}$$
+Therefore, if every country has the same ratio of voters to population, the weight per voter would be proportional to $\frac{1}{\sqrt[1.5]{[voters]}}$.
+This may later be modified to give voters outside the EBU the same voting weight as the lowest in a participating country.
+This method transforms the voting margins from each country's votes to make it further from 0, closer to unanimity.
+
+The second method, called 'Eurovision Schulze 2' or 'Grand Final square root', is less proportional, closer to equal representation. It gives each country voting power proportional to the square root of number of voters.
+$$\sqrt{[voters]}$$
+This one treats the whole world outside the EBU as a single country, using the same formula as the rest. Unlike the first method, it doesn't transform the margins.

@@ -34,21 +34,25 @@ class Contest extends Election
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
     public function countVotersByCountry()
     {
-        $minRatio = 1.0;
+        $minRatio = 1000000.0;
         $minRatioCountry = '';
         //The population for WLD should be set to $votes['WLD']^2 * $this->populations[max] / ($votes[max])^2, with max being the country with lowest voting power per-capita.
         foreach ($this->votingCountries as $key=>$country)
         {
            $this->votesbyCountry[$country] = $this->countVotes($country);
            echo($country.' has '. $this->votesbyCountry[$country]." voters. ");
+           $totalVotingPower = ($this->votesbyCountry[$country]*$this->populations[$country])**(1/3);
            if ($this->votesbyCountry[$country] === 0) {
                unset($this->votingCountries[$key]);
                echo("Removed from voting countries list\n");
-           } elseif ($this->votesbyCountry[$country]>0 AND ($this->votesbyCountry[$country]*$this->populations[$country])^(1/3)/$this->votesbyCountry[$country] < $minRatio) {
-               $minRatio = ($this->votesbyCountry[$country]*$this->populations[$country])**(1/3)/$this->votesbyCountry[$country];
+           } elseif ($totalVotingPower / $this->votesbyCountry[$country] < $minRatio) {
+               $minRatio = $totalVotingPower/$this->votesbyCountry[$country];
                $minRatioCountry = $country;
-               echo("\n");
+               echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+           } else {
+               echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            }
         }
+        echo("\$minRatio = ".$minRatio."\n");
     }
 }
