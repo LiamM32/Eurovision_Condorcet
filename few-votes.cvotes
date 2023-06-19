@@ -1,0 +1,8 @@
+
+#/Candidates: FIN; SWE; NOR; UKR; ISR; ITA; HRV; POL; MDA; ALB; CYP; BEL; ARM; FRA; LTU; SVN; CZE; CHE; EST; AUS; AUT; PRT; SRB; DEU; GBR; ESP
+#/Implicit Ranking: true
+
+#Combined with the included populations.json, all countries here should have equal voting weight.
+BGR || AUS > SVN > MDA > LTU > FIN > SWE > FRA > AUT > SRB *538
+CHE || FIN > SWE > SRB > LTU > FRA > ALB > SVN > MDA > AUS *410
+SRB || SVN > FIN > LTU > SWE > ALB > FRA > AUS > SRB > AUT *530
