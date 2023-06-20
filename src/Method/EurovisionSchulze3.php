@@ -28,7 +28,7 @@ class EurovisionSchulze3 extends EurovisionSchulze
             $iVotes = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry];
             $jVotes = $this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
             if($iVotes+$jVotes > 0) {
-                $nationalMargins[$country] = ($iVotes-$jVotes) / ($contest->populations[$country]/(abs($iVotes+$jVotes)*($iVotes+$jVotes)^2));
+                $nationalMargins[$country] = ($iVotes-$jVotes) / ($contest->populations[$country]/((abs($iVotes-$jVotes)*($iVotes+$jVotes))**(1/4)));
             } else {
                 $nationalMargins[$country] = 0;
             }
