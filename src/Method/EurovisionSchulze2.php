@@ -37,8 +37,4 @@ class EurovisionSchulze2 extends EurovisionSchulze
         return array_sum($nationalMargins);
     }
 
-    protected function getStats(): array
-    {
-        return [];
-    }
 }

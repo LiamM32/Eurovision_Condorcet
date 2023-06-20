@@ -10,7 +10,7 @@ class Contest extends Election
     public array $votingCountries;
     public array $votesbyCountry;
     
-    public function getPopulations()
+    public function parsePopulations()
     {
         $this->votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
         $this->populations = json_decode(fread(fopen("populations.json", "r"), 8096), true);
@@ -34,6 +34,7 @@ class Contest extends Election
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
     public function countVotersByCountry()
     {
+        $ratioPopulationVote = [];
         $minRatio = 1000000.0;
         $minRatioCountry = '';
         //The population for WLD should be set to $votes['WLD']^2 * $this->populations[max] / ($votes[max])^2, with max being the country with lowest voting power per-capita.
@@ -53,6 +54,16 @@ class Contest extends Election
                echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            }
         }
-        echo("\$minRatio = ".$minRatio."\n");
+        $this->votesbyCountry['WLD'] = $this->countVotes($this->votingCountries, false);
+        //echo("\$minRatio = ".$minRatio."\n");
+        
+        $this->populations['WLD'] = $this->countVotes($this->votingCountries, false) * array_sum($this->populations) / $this->countVotes($this->votingCountries);
+    }
+    
+    //Get's the n'th largest value in an array.
+    public static function large(array $array, int $rank)
+    {
+        sort($array);
+        return $array[sizeof[$array]-$rank];
     }
 }
