@@ -40,7 +40,6 @@ class EurovisionSchulze extends Schulze_Core
             $iVotes = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry];
             $jVotes = $this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
             $rawMargin = $iVotes - $jVotes;
-            echo("\n\$country = ".$country."\n\$iCountry = ".$iCountry."\n\$jCountry = ".$jCountry."\n\$rawMargin = ".$rawMargin."\nVotes = ".($iVotes + $jVotes)."\n\n");
             if($contest->votesbyCountry[$country] > 0 AND $rawMargin != 0) {
                 $nationalMargins[$country] = $rawMargin * ($contest->populations[$country]/(($iVotes+$jVotes)*abs($rawMargin)))**(1/3);
             } else {
@@ -49,7 +48,6 @@ class EurovisionSchulze extends Schulze_Core
         }
         $rawMargin_WLD = $this->filteredPairwise['WLD'][$iCountry]['win'][$jCountry]-$this->filteredPairwise['WLD'][$jCountry]['win'][$iCountry];
         if ($contest->votesbyCountry['WLD'] > 0 AND $rawMargin_WLD != 0) {
-            echo("\n\World vote"."\n\$iCountry = ".$iCountry."\n\$jCountry = ".$jCountry."\n\$rawMargin = ".$rawMargin_WLD."\nVotes = ".$contest->votesbyCountry['WLD']."\n\n");
             $nationalMargins['WLD'] = $rawMargin * ($contest->populations['WLD']/($contest->votesbyCountry['WLD']*abs($rawMargin_WLD)))**(1/3);
         }
         

@@ -2,8 +2,5 @@
 /vendor/
 /composer.lock
 
-# phpunit
-.phpunit*
-
 # Sys
 .DS_Store

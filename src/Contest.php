@@ -9,7 +9,7 @@ class Contest extends Election
     public array $populations = [];
     public array $votingCountries;
     public array $votesbyCountry;
-
+    
     public function parsePopulations()
     {
         $this->votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
@@ -22,15 +22,15 @@ class Contest extends Election
         $this->populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
         //echo ("Here are the populations of voting countries:\n");
         //var_dump($this->populations);
-
+        
         return $this->populations;
     }
-
+    
     public function readData()
     {
         $this->votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
     }
-
+    
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
     public function countVotersByCountry()
     {
@@ -60,48 +60,7 @@ class Contest extends Election
         $this->populations['WLD'] = $this->countVotes($this->votingCountries, false) * array_sum($this->populations) / $this->countVotes($this->votingCountries);
     }
     
-    //Changes the values in $populations to reduce variation, especially at the high end.
-    public function getCompressedPopulations(int $repetitions, array $populations=NULL) : array
-    {
-        if (!isset($populations)) {
-            $populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
-        }
-        $x = 0;
-        while ($x < $repetitions) {
-            foreach ($this->votingCountries as $country) {
-                $populations[$country] = $populations[$country]*(1 - 0.5*$populations[$country]/array_sum($populations));
-            }
-            $x++;
-        }
-        return $populations;
-    }
-    //
-    public function getAltCompressedPopulations(int $repetitions, array $populations=NULL) : array
-    {
-        if (!isset($populations)) {
-            $populations = $this->populations;
-        }
-        
-        foreach ($this->populations as $country=>$pop) {
-            $popOverRtV[$country] = $pop / sqrt($this->votesbyCountry);
-        }
-        
-        $x = 0;
-        while ($x < $repetitions) {
-            $compressedPopulations=[];
-            foreach ($this->votingCountries as $country) {
-                $compressedPORV[$country] = $popOverRtV[$country]*(1 - 0.5*$popOverRtV[$country]/array_sum($popOverRtV));
-                $populations[$country] = $compressedPORV[$country] * sqrt($this->votesbyCountry[$country]);
-            }
-            $x++;
-            if (isset($compressedPORV['WLD']) AND $populations['WLD'] > array_sum($populations)-$populations['WLD']) {
-                $x--;
-                echo("Went through an extra population compression cycle\n");
-            }
-        }
-        return $populations;
-    }
-    
+    //Get's the n'th largest value in an array.
     public static function large(array $array, int $rank)
     {
         sort($array);
