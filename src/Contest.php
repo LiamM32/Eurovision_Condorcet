@@ -61,9 +61,11 @@ class Contest extends Election
     }
     
     //Changes the values in $populations to reduce variation, especially at the high end.
-    public function getCompressedPopulations(int $repetitions) : array
+    public function getCompressedPopulations(int $repetitions, array $populations=NULL) : array
     {
-        $populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
+        if (!isset($populations)) {
+            $populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
+        }
         $x = 0;
         while ($x < $repetitions) {
             foreach ($this->votingCountries as $country) {
@@ -74,20 +76,35 @@ class Contest extends Election
         return $populations;
     }
     //
-    public function getAltCompressedPopulations(int $repetitions, bool $withWLD=false) : array
+    public function getAltCompressedPopulations(int $repetitions, array $populations=NULL) : array
     {
+        if (!isset($populations)) {
+            $populations = $this->populations;
+        }
+        
         foreach ($this->populations as $country=>$pop) {
             $popOverRtV[$country] = $pop / sqrt($this->votesbyCountry);
         }
         
         $x = 0;
         while ($x < $repetitions) {
+            $compressedPopulations=[];
             foreach ($this->votingCountries as $country) {
                 $compressedPORV[$country] = $popOverRtV[$country]*(1 - 0.5*$popOverRtV[$country]/array_sum($popOverRtV));
-                $population[$country] = $compressedPORV[$country] * sqrt($this->votesbyCountry[$country]);
+                $populations[$country] = $compressedPORV[$country] * sqrt($this->votesbyCountry[$country]);
             }
             $x++;
+            if (isset($compressedPORV['WLD']) AND $populations['WLD'] > array_sum($populations)-$populations['WLD']) {
+                $x--;
+                echo("Went through an extra population compression cycle\n");
+            }
         }
         return $populations;
+    }
+    
+    public static function large(array $array, int $rank)
+    {
+        sort($array);
+        return $array[sizeof[$array]-$rank];
     }
 }

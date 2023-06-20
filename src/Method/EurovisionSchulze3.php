@@ -8,9 +8,9 @@ use CondorcetPHP\Condorcet\Algo\Methods\Schulze\Schulze_Core;
 use CondorcetPHP\Condorcet\Election;
 use EurovisionVoting\Contest;
 
-class EurovisionSchulze2 extends EurovisionSchulze
+class EurovisionSchulze3 extends EurovisionSchulze
 {
-    public const METHOD_NAME = ['Eurovision Schulze 2', 'Grand Final square root'];
+    public const METHOD_NAME = ['Eurovision Schulze 3', 'Grand Final 1.6 root'];
 
     protected function schulzeVariant(int $i, int $j, Election $contest): float
     {
@@ -28,7 +28,7 @@ class EurovisionSchulze2 extends EurovisionSchulze
             $iVotes = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry];
             $jVotes = $this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
             if($iVotes+$jVotes > 0) {
-                $nationalMargins[$country] = ($iVotes-$jVotes) / sqrt($iVotes+$jVotes);
+                $nationalMargins[$country] = ($iVotes-$jVotes) / ($contest->populations[$country]/(abs($iVotes+$jVotes)*($iVotes+$jVotes)^2));
             } else {
                 $nationalMargins[$country] = 0;
             }
@@ -37,8 +37,4 @@ class EurovisionSchulze2 extends EurovisionSchulze
         return array_sum($nationalMargins);
     }
 
-    protected function getStats(): array
-    {
-        return [];
-    }
 }
