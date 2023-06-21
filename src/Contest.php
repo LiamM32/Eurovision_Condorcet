@@ -9,7 +9,7 @@ class Contest extends Election
     public array $populations = [];
     public array $votingCountries;
     public array $votesbyCountry;
-    
+
     public function parsePopulations()
     {
         $this->votingCountries = json_decode(fread(fopen(__DIR__."/../voting-countries.json", "r"), 512), true);
@@ -22,15 +22,15 @@ class Contest extends Election
         $this->populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
         //echo ("Here are the populations of voting countries:\n");
         //var_dump($this->populations);
-        
+
         return $this->populations;
     }
-    
+
     public function readData()
     {
         $this->votingCountries = json_decode(fread(fopen(__DIR__."/../voting-countries.json", "r"), 512), true);
     }
-    
+
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
     public function countVotersByCountry()
     {
