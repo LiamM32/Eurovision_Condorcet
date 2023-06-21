@@ -65,13 +65,12 @@ class EurovisionSchulze extends Schulze_Core
 
         foreach ($CandidatesKeys as $i) {
             foreach ($CandidatesKeys as $j) {
-                echo("\n\$StrongestPaths[".$i."][".$j."] = ".$this->StrongestPaths[$i][$j].", ");
-                if ($this->StrongestPaths[$j][$i] <=> 0) {
+                if ([$i] != [$j] AND $this->StrongestPaths[$j][$i] <> 0) {
                     $this->StrongestPaths[$i][$j] = (-1) * $this->StrongestPaths[$j][$i];
                     echo("Inverted an already-calculated margin.\n");
-                } elseif ($i !== $j) {
-                    $this->strongestPaths[$i][$j] = $this->schulzeVariant($i, $j, $contest);
-                    echo("Combined margin is now set to ".$this->StrongestPaths[$i][$j]);
+                } elseif ($i != $j) {
+                    $this->StrongestPaths[$i][$j] = $this->schulzeVariant($i, $j, $contest);
+                    echo("\$StrongestPaths[".$i."][".$j."] now set to ".$this->StrongestPaths[$i][$j]."\n");
                 }
             }
         }
