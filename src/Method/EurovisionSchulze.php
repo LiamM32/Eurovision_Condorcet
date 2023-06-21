@@ -40,7 +40,7 @@ class EurovisionSchulze extends Schulze_Core
             $iVotes = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry];
             $jVotes = $this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
             $rawMargin = $iVotes - $jVotes;
-            echo("\n\$country = ".$country."\n\$iCountry = ".$iCountry."\n\$jCountry = ".$jCountry."\n\$rawMargin = ".$rawMargin."\nVotes = ".($iVotes + $jVotes)."\n\n");
+            //echo("\n\$country = ".$country.",  \$iCountry = ".$iCountry.",  \$jCountry = ".$jCountry.",  \$rawMargin = ".$rawMargin.",  Votes = ".($iVotes + $jVotes)."\n");
             if($contest->votesbyCountry[$country] > 0 AND $rawMargin != 0) {
                 $nationalMargins[$country] = $rawMargin * ($contest->populations[$country]/(($iVotes+$jVotes)*abs($rawMargin)))**(1/3);
             } else {
@@ -49,7 +49,7 @@ class EurovisionSchulze extends Schulze_Core
         }
         $rawMargin_WLD = $this->filteredPairwise['WLD'][$iCountry]['win'][$jCountry]-$this->filteredPairwise['WLD'][$jCountry]['win'][$iCountry];
         if ($contest->votesbyCountry['WLD'] > 0 AND $rawMargin_WLD != 0) {
-            echo("\n\World vote"."\n\$iCountry = ".$iCountry."\n\$jCountry = ".$jCountry."\n\$rawMargin = ".$rawMargin_WLD."\nVotes = ".$contest->votesbyCountry['WLD']."\n\n");
+            //echo("\n\World vote".",  \$iCountry = ".$iCountry.",  \$jCountry = ".$jCountry.",  \$rawMargin = ".$rawMargin_WLD.",  Votes = ".$contest->votesbyCountry['WLD']."\n");
             $nationalMargins['WLD'] = $rawMargin * ($contest->populations['WLD']/($contest->votesbyCountry['WLD']*abs($rawMargin_WLD)))**(1/3);
         }
         
@@ -57,4 +57,39 @@ class EurovisionSchulze extends Schulze_Core
         return array_sum($nationalMargins);
     }
 
+    // Calculate the Strongest Paths
+    protected function makeStrongestPaths(): void
+    {
+        $contest = $this->getElection();
+        $CandidatesKeys = array_keys($contest->getCandidatesList());
+
+        foreach ($CandidatesKeys as $i) {
+            foreach ($CandidatesKeys as $j) {
+                echo("\n\$StrongestPaths[".$i."][".$j."] = ".$this->StrongestPaths[$i][$j].", ");
+                if ($this->StrongestPaths[$j][$i] <=> 0) {
+                    $this->StrongestPaths[$i][$j] = (-1) * $this->StrongestPaths[$j][$i];
+                    echo("Inverted an already-calculated margin.\n");
+                } elseif ($i !== $j) {
+                    $this->strongestPaths[$i][$j] = $this->schulzeVariant($i, $j, $contest);
+                    echo("Combined margin is now set to ".$this->StrongestPaths[$i][$j]);
+                }
+            }
+        }
+
+        foreach ($CandidatesKeys as $i) {
+            foreach ($CandidatesKeys as $j) {
+                if ($i !== $j) {
+                    foreach ($CandidatesKeys as $k) {
+                        if ($i !== $k && $j !== $k) {
+                            $this->StrongestPaths[$j][$k] =
+                                max(
+                                    $this->StrongestPaths[$j][$k],
+                                    min($this->StrongestPaths[$j][$i], $this->StrongestPaths[$i][$k])
+                                );
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -9,7 +9,7 @@ use EurovisionVoting\Method\EurovisionSchulze2;
 use EurovisionVoting\Method\EurovisionSchulze3;
 use EurovisionVoting\Contest;
 
-require_once 'vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 if (!isset($argv[1])) {
     echo ("You must use a .cvotes file as the first argument. \n");
@@ -35,12 +35,12 @@ echo('The entire contest has '.$contest->countVotes()." votes.\n");
 $grand_final = $contest->getResult('Eurovision Schulze')->getResultAsString();
 echo ("\nResults from the first method:\n");
 var_dump($grand_final);
-$grand_final_2 = $contest->getResult('Eurovision Schulze 2')->getResultAsString();
+/*$grand_final_2 = $contest->getResult('Eurovision Schulze 2')->getResultAsString();
 echo ("\nResults from the second method:\n");
 var_dump($grand_final_2);
 $grand_final_3 = $contest->getResult('Eurovision Schulze 3')->getResultAsString();
 echo ("\nResults from the third method:\n");
-var_dump($grand_final_3);
+var_dump($grand_final_3);*/
 $Schulze = $contest->getResult('Schulze Margin')->getResultAsString();
 echo ("\nResults from the regular Schulze Method:\n");
 var_dump($Schulze);
