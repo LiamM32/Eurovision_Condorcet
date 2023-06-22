@@ -15,7 +15,6 @@ class Init {
         Condorcet::addMethod(EurovisionSchulze::class);
         Condorcet::addMethod(EurovisionSchulze2::class);
         Condorcet::addMethod(EurovisionSchulze3::class);
-        
         Condorcet::addMethod(minor_variants\EurovisionSchulze1b::class);
         Condorcet::addMethod(minor_variants\EurovisionSchulze1c::class);
         Condorcet::addMethod(minor_variants\EurovisionSchulze1d::class);
