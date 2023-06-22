@@ -65,7 +65,7 @@ class EurovisionSchulze extends Schulze_Core
 
         foreach ($CandidatesKeys as $i) {
             foreach ($CandidatesKeys as $j) {
-                if ([$i] != [$j] AND $this->StrongestPaths[$j][$i] <> 0) {
+                if ([$i] > [$j]) {
                     $this->StrongestPaths[$i][$j] = (-1) * $this->StrongestPaths[$j][$i];
                     echo("Inverted an already-calculated margin.\n");
                 } elseif ($i != $j) {
