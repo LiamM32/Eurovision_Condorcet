@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-use CondorcetPHP\Condorcet\Condorcet;
 use CondorcetPHP\Condorcet\Tools\Randomizers\VoteRandomizer;
-use EurovisionVoting\Method\EurovisionSchulze;
 use EurovisionVoting\Contest;
+use EurovisionVoting\Init;
 
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-Condorcet::addMethod(EurovisionSchulze::class);
+Init::registerMethods();
 
 $contest = new Contest;
 $contest->parsePopulations();
