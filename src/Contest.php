@@ -12,8 +12,8 @@ class Contest extends Election
     
     public function parsePopulations()
     {
-        $this->votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
-        $this->populations = json_decode(fread(fopen("populations.json", "r"), 8096), true);
+        $this->votingCountries = json_decode(fread(fopen(__DIR__."/../voting-countries.json", "r"), 512), true);
+        $this->populations = json_decode(fread(fopen(__DIR__."/../populations.json", "r"), 8096), true);
         foreach ($this->votingCountries as $country) {
             if($this->populations[$country]===NULL) {
                 echo ("\nWarning: Population of " .$country." unknown\n");
@@ -28,7 +28,7 @@ class Contest extends Election
     
     public function readData()
     {
-        $this->votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
+        $this->votingCountries = json_decode(fread(fopen(__DIR__."/../voting-countries.json", "r"), 512), true);
     }
     
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
@@ -49,9 +49,9 @@ class Contest extends Election
            } elseif ($totalVotingPower / $this->votesbyCountry[$country] < $minRatio) {
                $minRatio = $totalVotingPower/$this->votesbyCountry[$country];
                $minRatioCountry = $country;
-               echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               //echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            } else {
-               echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               //echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            }
         }
         $this->votesbyCountry['WLD'] = $this->countVotes($this->votingCountries, false);

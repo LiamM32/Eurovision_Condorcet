@@ -6,7 +6,7 @@ use CondorcetPHP\Condorcet\Tools\Randomizers\VoteRandomizer;
 use EurovisionVoting\Contest;
 use EurovisionVoting\Init;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ .'/../vendor/autoload.php';
 
 Init::registerMethods();
 
@@ -14,13 +14,13 @@ $contest = new Contest;
 $contest->parsePopulations();
 $contest->readData();
 
-$contestants = json_decode(fread(fopen("finalists.json", "r"), 512), true);
+$contestants = json_decode(fread(fopen(__DIR__."/../finalists.json", "r"), 512), true);
 foreach ($contestants as $country) {
     $contest->addCandidate($country);
 }
 
 
-$votingCountries = json_decode(fread(fopen("voting-countries.json", "r"), 512), true);
+$votingCountries = json_decode(fread(fopen(__DIR__."/../voting-countries.json", "r"), 512), true);
 
 $randomizer = new VoteRandomizer($contestants);
 $randomizer->maxCandidatesRanked = 25;
@@ -37,8 +37,6 @@ while ($votesAdded < $argv[1]) {
     $contest->addVote($newVote, $contestants[array_rand($contestants)]);
     $votesAdded++;
 }
-$contest->addVote($randomizer->getNewVote());
-$contest->addVote($randomizer->getNewVote());
 $contest->addVote($randomizer->getNewVote());
 
 echo("Printing votes:\n");

@@ -20,7 +20,6 @@ class EurovisionSchulze extends Schulze_Core
             $this->filteredPairwise[$country] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
         }
         $this->filteredPairwise['WLD'] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => false, 'tags' => $country])->pairwise;
-        echo("Finished getAllPairwise()\n");
     }
 
     protected function schulzeVariant(int $i, int $j, Election $contest): float
@@ -53,11 +52,11 @@ class EurovisionSchulze extends Schulze_Core
             $nationalMargins['WLD'] = $rawMargin * ($contest->populations['WLD']/($contest->votesbyCountry['WLD']*abs($rawMargin_WLD)))**(1/3);
         }
         
-        echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
+        //echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
         return array_sum($nationalMargins);
     }
 
-    // Calculate the Strongest Paths
+    // Calculate the direct paths
     protected function makeStrongestPaths(): void
     {
         $contest = $this->getElection();
@@ -67,14 +66,17 @@ class EurovisionSchulze extends Schulze_Core
             foreach ($CandidatesKeys as $j) {
                 if ([$i] != [$j] AND $this->StrongestPaths[$j][$i] <> 0) {
                     $this->StrongestPaths[$i][$j] = (-1) * $this->StrongestPaths[$j][$i];
-                    echo("Inverted an already-calculated margin.\n");
                 } elseif ($i != $j) {
                     $this->StrongestPaths[$i][$j] = $this->schulzeVariant($i, $j, $contest);
-                    echo("\$StrongestPaths[".$i."][".$j."] now set to ".$this->StrongestPaths[$i][$j]."\n");
                 }
             }
         }
+        $this->finaliseStrongestPaths($contest, $CandidatesKeys);
+    }
 
+    // Find the strength of the strongest paths.
+    protected function finaliseStrongestPaths($contest, $CandidatesKeys): void
+    {
         foreach ($CandidatesKeys as $i) {
             foreach ($CandidatesKeys as $j) {
                 if ($i !== $j) {
