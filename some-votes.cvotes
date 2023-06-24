@@ -1,7 +1,7 @@
 #Voting data for a hypothetical Eurovision Song Contest with a new voting system.
 #Tags represent the country that the voter is from in 3-character country codes.
 
-#/Candidates: FIN; SWE; NOR; UKR; ISR; ITA; HRV; POL; MDA; ALB; CYP; BEL; ARM; FRA; LTU; SVN; CZE; CHE; EST; AUS; AUT; PRT; SRB; DEU; GBR; ESP
+#/Candidates: ALB; ARM; AUS; AUT; BEL; CHE; CYP; CZE; DEU; ESP; EST; FIN; FRA; GBR; HRV; ISR; ITA; LTU; MDA; NOR; POL; PRT; SRB; SVN; SWE; UKR
 #/Implicit Ranking: true
 
 #These are based on the 2023 Public vote, with 1% of each countries population voting (& 0.1% of World).

@@ -17,7 +17,8 @@ class EurovisionSchulze extends Schulze_Core
 
     {
         foreach ($contest->votingCountries as $country) {
-            $this->filteredPairwise[$country] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
+            //$this->filteredPairwise[$country] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => true, 'tags' => $country])->pairwise;
+            $this->filteredPairwise[$country] = $contest->getExplicitFilteredPairwiseByTags($country);
         }
         $this->filteredPairwise['WLD'] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => false, 'tags' => $country])->pairwise;
         echo("Finished getAllPairwise()\n");
