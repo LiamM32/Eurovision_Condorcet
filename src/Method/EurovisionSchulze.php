@@ -12,14 +12,14 @@ class EurovisionSchulze extends Schulze_Core
 {
     public const METHOD_NAME = ['Eurovision Schulze', 'Grand Final', 'Grand Final 1.5-root'];
     protected array $filteredPairwise;
-    
+
     protected function getAllPairwise(Contest $contest)
 
     {
         foreach ($contest->votingCountries as $country) {
             $this->filteredPairwise[$country] = $contest->getExplicitFilteredPairwiseByTags($country);
         }
-        $this->filteredPairwise['WLD'] = $contest->getResult(methodOptions: ['%tagFilter' => true, 'withTag' => false, 'tags' => $country])->pairwise;
+        $this->filteredPairwise['WLD'] = $contest->getExplicitFilteredPairwiseByTags('WLD');
         echo("Finished getAllPairwise()\n");
     }
 
