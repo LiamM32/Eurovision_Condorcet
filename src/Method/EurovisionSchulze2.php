@@ -12,29 +12,12 @@ class EurovisionSchulze2 extends EurovisionSchulze
 {
     public const METHOD_NAME = ['Eurovision Schulze 2', 'Grand Final square root'];
 
-    protected function schulzeVariant(int $i, int $j, Election $contest): float
+    protected function warpedNationalPublicMargin($iVotes, $jVotes, $country=NULL): float
     {
-        if(!isset($this->filteredPairwise)){
-            $this->getAllPairwise($contest);
-        }
-        
-        $nationalVotes = $contest->getVotesManager();
-        $nationalMargins = [];
-        $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
-        $jCountry = $contest->getCandidateObjectFromKey($j)->getName();
-        
-        foreach ($contest->votingCountries as $country)
-        {
-            $iVotes = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry];
-            $jVotes = $this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
-            if($iVotes+$jVotes > 0) {
-                $nationalMargins[$country] = ($iVotes-$jVotes) / sqrt($iVotes+$jVotes);
-            } else {
-                $nationalMargins[$country] = 0;
-            }
-        }
-        
-        return array_sum($nationalMargins);
+        return ($iVotes-$jVotes) / sqrt($iVotes+$jVotes);
     }
-
+    protected function warpedNationalJuryMargin($iVotes, $jVotes, $country=NULL): float
+    {
+        return ($iVotes-$jVotes) / sqrt($iVotes+$jVotes);
+    }
 }

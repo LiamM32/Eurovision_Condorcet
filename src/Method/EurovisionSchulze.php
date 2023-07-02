@@ -14,18 +14,33 @@ class EurovisionSchulze extends Schulze_Core
     protected array $filteredPairwise;
 
     protected function getAllPairwise(Contest $contest)
-
     {
         foreach ($contest->votingCountries as $country) {
-            $this->filteredPairwise[$country] = $contest->getExplicitFilteredPairwiseByTags($country);
+            $this->filteredPairwise['Public'][$country] = $contest->getExplicitFilteredPairwiseByTags(['Public',$country]);
+            $this->filteredPairwise['Jury'][$country] = $contest->getExplicitFilteredPairwiseByTags(['Jury',$country]);
         }
-        $this->filteredPairwise['WLD'] = $contest->getExplicitFilteredPairwiseByTags('WLD');
+        $this->filteredPairwise['Public']['WLD'] = $contest->getExplicitFilteredPairwiseByTags('WLD');
         echo("Finished getAllPairwise()\n");
     }
 
-    protected function schulzeVariant(int $i, int $j, Election $contest): float
+    public function cacheOnePairwise(string $group, string $country)
     {
-        if(!isset($this->filteredPairwise)){
+        $this->filteredPairwise[$group][$country] = $this->getElection()->getExplicitFilteredPairwiseByTags([$group,$country]);
+    }
+
+    public function estimateWeights(Contest $contest, array $countries) {
+        $weights = [];
+        foreach($countries as $country) {
+            $weights[$country] = $this->warpedNationalPublicMargin($contest->countVotes('Public', $country), 0, $contest->populations[$country]);
+            $weights[$country] += $this->warpedNationalJuryMargin($contest->countVotes('Jury', $country), 0);
+        }
+        $weights = sort($weights);
+        return $weights;
+    }
+
+    protected function schulzeVariant(int $i, int $j, Election $contest, bool $getAll=true): float
+    {
+        if(!isset($this->filteredPairwise) && $getAll){
             $this->getAllPairwise($contest);
         }
         
@@ -34,27 +49,53 @@ class EurovisionSchulze extends Schulze_Core
         $nationalMargins = [];
         $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
         $jCountry = $contest->getCandidateObjectFromKey($j)->getName();
+
+        $publicTotal = 0;
+        $juryTotal = 0;
         //echo("Going to start the foreach loop.\n");
-        foreach ($contest->votingCountries as $country)
+        foreach ($this->filteredPairwise['Public'] as $country => $nationalPairwise) if ($country !== $iCountry AND $country !== $jCountry)
         {
-            $iVotes = $this->filteredPairwise[$country][$iCountry]['win'][$jCountry];
-            $jVotes = $this->filteredPairwise[$country][$jCountry]['win'][$iCountry];
-            $rawMargin = $iVotes - $jVotes;
+            $iVotes = $nationalPairwise[$iCountry]['win'][$jCountry];
+            $jVotes = $nationalPairwise[$jCountry]['win'][$iCountry];
             //echo("\n\$country = ".$country.",  \$iCountry = ".$iCountry.",  \$jCountry = ".$jCountry.",  \$rawMargin = ".$rawMargin.",  Votes = ".($iVotes + $jVotes)."\n");
-            if($contest->votesbyCountry[$country] > 0 AND $rawMargin != 0) {
-                $nationalMargins[$country] = $rawMargin * ($contest->populations[$country]/(($iVotes+$jVotes)*abs($rawMargin)))**(1/3);
-            } else {
-                $nationalMargins[$country] = 0;
+            if ($iVotes === $jVotes) {
+                $nationalMargins['Public'][$country] = 0;
+            } elseif ($iVotes + $jVotes > 0) {
+                $nationalMargins['Public'][$country] = $this->warpedNationalPublicMargin($iVotes, $jVotes, $contest->populations[$country]);
+            }
+            if ($iVotes + $jVotes > 0) {
+                $publicTotal += $this->warpedNationalPublicMargin($iVotes+$jVotes, 0, $contest->populations[$country]);
             }
         }
-        $rawMargin_WLD = $this->filteredPairwise['WLD'][$iCountry]['win'][$jCountry]-$this->filteredPairwise['WLD'][$jCountry]['win'][$iCountry];
-        if ($contest->votesbyCountry['WLD'] > 0 AND $rawMargin_WLD != 0) {
-            //echo("\n\World vote".",  \$iCountry = ".$iCountry.",  \$jCountry = ".$jCountry.",  \$rawMargin = ".$rawMargin_WLD.",  Votes = ".$contest->votesbyCountry['WLD']."\n");
-            $nationalMargins['WLD'] = $rawMargin * ($contest->populations['WLD']/($contest->votesbyCountry['WLD']*abs($rawMargin_WLD)))**(1/3);
+
+        foreach ($this->filteredPairwise['Jury'] as $country => $nationalPairwise) if ($country !== $iCountry AND $country !== $jCountry)
+        {
+            $iVotes = $nationalPairwise[$iCountry]['win'][$jCountry];
+            $jVotes = $nationalPairwise[$jCountry]['win'][$iCountry];
+            //echo("\n\$country = ".$country.",  \$iCountry = ".$iCountry.",  \$jCountry = ".$jCountry.",  \$rawMargin = ".$rawMargin.",  Votes = ".($iVotes + $jVotes)."\n");
+            if ($iVotes === $jVotes) {
+                $nationalMargins['Jury'][$country] = 0;
+            } elseif ($iVotes + $jVotes > 0) {
+                $nationalMargins['Jury'][$country] = $this->warpedNationalJuryMargin($iVotes, $jVotes, $contest->populations[$country]);
+            }
+            if ($iVotes + $jVotes > 0) {
+                $juryTotal += $this->warpedNationalJuryMargin($iVotes+$jVotes, 0, $contest->populations[$country]);
+            }
         }
         
-        echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
-        return array_sum($nationalMargins);
+        //echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
+        $combinedPublic = array_sum($nationalMargins['Public']) * $contest->groupBalance['Public'] / ($publicTotal+0.001);
+        $combinedJury = array_sum($nationalMargins['Jury']) * $contest->groupBalance['Jury'] / ($juryTotal+0.001);
+        return $combinedPublic + $combinedJury;
+    }
+
+    protected function warpedNationalPublicMargin($iVotes, $jVotes, $population): float
+    {
+        return ($iVotes - $jVotes) * ($population/(($iVotes+$jVotes)*abs($iVotes-$jVotes)))**(1/3);
+    }
+    protected function warpedNationalJuryMargin($iVotes, $jVotes, $country=NULL): float
+    {
+        return ($iVotes - $jVotes) * (1/abs($iVotes-$jVotes))**(1/3);
     }
 
     // Calculate the Strongest Paths
