@@ -6,16 +6,23 @@ use CondorcetPHP\Condorcet\Tools\Converters\CondorcetElectionFormat;
 use EurovisionVoting\Contest;
 use EurovisionVoting\Init;
 
+use EurovisionVoting\resultsNarrative;
+
 require_once __DIR__ .'/../vendor/autoload.php';
+
+ini_set('memory_limit', '2048M');
+
+//const OPTIONS = ['-v', '-n'];
+//global $settings = [];
+
+Init::registerMethods();
+
+//public $commandOptions = getopt('v', Condorcet::getAuthMethods);
 
 if (!isset($argv[1])) {
     echo ("You must use a .cvotes file as the first argument. \n");
     exit(0);
 }
-
-ini_set('memory_limit', '2048M');
-
-Init::registerMethods();
 
 $votesdata = new CondorcetElectionFormat($argv[1]);
 $contest = new Contest;
@@ -26,6 +33,9 @@ $contest->readData();
 $contest->countVotersByCountry();
 
 echo('The entire contest has '.$contest->countVotes()." votes.\n");
+
+//new resultsNarrative($contest, 'Eurovision Schulze');
+$contest->playResultsNarrative('Eurovision Schulze');
 
 $grand_final = $contest->getResult('Eurovision Schulze')->getResultAsString();
 echo ("\nResults from the first method:\n");

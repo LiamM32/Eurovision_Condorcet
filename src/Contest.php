@@ -2,13 +2,21 @@
 
 namespace EurovisionVoting;
 
+use CondorcetPHP\Condorcet\Condorcet;
 use CondorcetPHP\Condorcet\Election;
+use CondorcetPHP\Condorcet\Vote;
+use EurovisionVoting\countryData;
 
 class Contest extends Election
 {
     public array $populations = [];
     public array $votingCountries;
+    public array $votingGroups = ['Public', 'Jury'];
+    public array $groupBalance = ['Public'=>0.5, 'Jury'=>0.25];
     public array $votesbyCountry;
+    public array $countryNames;
+
+    use resultsNarrative;
     
     public function parsePopulations()
     {
@@ -29,6 +37,18 @@ class Contest extends Election
     public function readData()
     {
         $this->votingCountries = json_decode(fread(fopen(__DIR__."/../voting-countries.json", "r"), 512), true);
+        $this->countryNames = countryData::getCountryNames();
+    }
+
+    protected function registerVote(Vote $vote, array|string|null $tags): Vote
+    {
+        if (isset($tags) && array_intersect($this->votingGroups, $tags ?? []) != null) {
+            array_push($tags, 'Public');
+        }
+        $tags === null || $vote->addTags($tags);
+        $this->Votes[] = $vote;
+
+        return $vote;
     }
     
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
@@ -41,7 +61,7 @@ class Contest extends Election
         foreach ($this->votingCountries as $key=>$country)
         {
            $this->votesbyCountry[$country] = $this->countVotes($country);
-           echo($country.' has '. $this->votesbyCountry[$country]." voters. ");
+           //if ($settings['v']==true) echo($country.' has '. $this->votesbyCountry[$country]." voters. ");
            $totalVotingPower = ($this->votesbyCountry[$country]*$this->populations[$country])**(1/3);
            if ($this->votesbyCountry[$country] === 0) {
                unset($this->votingCountries[$key]);
@@ -49,9 +69,9 @@ class Contest extends Election
            } elseif ($totalVotingPower / $this->votesbyCountry[$country] < $minRatio) {
                $minRatio = $totalVotingPower/$this->votesbyCountry[$country];
                $minRatioCountry = $country;
-               echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               //echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            } else {
-               echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               //echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            }
         }
         $this->votesbyCountry['WLD'] = $this->countVotes($this->votingCountries, false);
