@@ -12,7 +12,7 @@ class tools
 
    // Copied from here: https://stackoverflow.com/a/11872928/6157763
     public static function getRandomWeightedElement(array $weightedValues) {
-        $rand = mt_rand(1, (int) array_sum($weightedValues));
+        $rand = rand(1, (int) array_sum($weightedValues));
 
         foreach ($weightedValues as $key => $value) {
             $rand -= $value;
@@ -22,9 +22,9 @@ class tools
         }
     }
 
-    public static function array_reciprocal ($array) {
+    public static function array_reciprocal (array $array, $addend = 0) {
         foreach ($array as &$element) {
-            $element = 1 / $element;
+            $element = 1 / ($element + $addend);
         }
         return $array;
     }
@@ -35,4 +35,20 @@ class tools
         array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
         return $return;
     }
+
+    public static function count ($input) {
+        if ($input = NULL OR []) {
+            return 0;
+        } elseif (gettype($input) == 'array') {
+            return count($input);
+        } else {
+            return 1;
+        }
+    }
+
+    public static function randSelect (array $array) {
+        $key = array_rand($array);
+        return $array[$key];
+    }
 }
+

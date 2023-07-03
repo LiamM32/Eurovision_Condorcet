@@ -86,9 +86,8 @@ class EurovisionSchulze extends Schulze_Core
 
     protected function schulzeVariant(int $i, int $j, Election $contest, bool $measuring=false): float
     {
-        //echo("Starting EurovisionSchulze::schulzeVariant()\n");
-        $nationalVotes = $contest->getVotesManager();
-        $nationalMargins = [];
+        //$nationalVotes = $contest->getVotesManager();
+        $netMargin = ['Public'=>0.0, 'Jury'=>0.0];
         $iCountry = $contest->getCandidateObjectFromKey($i)->getName();
         $jCountry = $contest->getCandidateObjectFromKey($j)->getName();
 
@@ -103,7 +102,7 @@ class EurovisionSchulze extends Schulze_Core
             if ($iVotes === $jVotes) {
                 $nationalMargins['Public'][$country] = 0;
             } elseif ($iVotes + $jVotes > 0) {
-                $nationalMargins['Public'][$country] = $this->warpedNationalPublicMargin($iVotes, $jVotes, $contest->populations[$country]);
+                $netMargin['Public'] += $this->warpedNationalPublicMargin($iVotes, $jVotes, $contest->populations[$country]);
             }
             if ($iVotes + $jVotes > 0) {
                 $publicTotal += $this->warpedNationalPublicMargin($iVotes+$jVotes, 0, $contest->populations[$country]);
@@ -118,7 +117,7 @@ class EurovisionSchulze extends Schulze_Core
             if ($iVotes === $jVotes) {
                 $nationalMargins['Jury'][$country] = 0;
             } elseif ($iVotes + $jVotes > 0) {
-                $nationalMargins['Jury'][$country] = $this->warpedNationalJuryMargin($iVotes, $jVotes, $contest->populations[$country]);
+                $netMargin['Jury'] += $this->warpedNationalJuryMargin($iVotes, $jVotes, $contest->populations[$country]);
             }
             if ($iVotes + $jVotes > 0) {
                 $juryTotal += $this->warpedNationalJuryMargin($iVotes+$jVotes, 0, $contest->populations[$country]);
@@ -126,8 +125,8 @@ class EurovisionSchulze extends Schulze_Core
         }
         
         //echo('Margin for '.$iCountry.' vs '.$jCountry." is ".array_sum($nationalMargins)."\n");
-        $combinedPublic = ($juryTotal + 1) * array_sum($nationalMargins['Public']) * $contest->groupBalance['Public']/* / ($publicTotal+0.001)*/;
-        $combinedJury = ($publicTotal + 1) * array_sum($nationalMargins['Jury']) * $contest->groupBalance['Jury']/* / ($juryTotal+0.001)*/;
+        $combinedPublic = ($juryTotal + 1) * $netMargin['Public'] * $contest->groupBalance['Public']/* / ($publicTotal+0.001)*/;
+        $combinedJury = ($publicTotal + 1) * $netMargin['Jury'] * $contest->groupBalance['Jury']/* / ($juryTotal+0.001)*/;
         return /*$this->voteTotal * */ ($combinedPublic + $combinedJury);
     }
 

@@ -41,7 +41,7 @@ ESP || FIN > UKR > NOR > ISR > ITA > SWE > PRT > BEL > ARM > MDA *184
 SWE || FIN > NOR > CHE > BEL > ITA > HRV > UKR > CZE > FRA > AUS *64
 CHE || ALB > ITA > FIN > PRT > HRV > SWE > DEU > ISR > NOR > SRB *59
 UKR || POL > FIN > HRV > NOR > MDA > GBR > LTU > SWE > CZE > ISR *178
-CHE || FIN > LTU > POL > NOR > BEL > SWE > UKR > ISR > AUS > MDA *59
+GBR || FIN > LTU > POL > NOR > BEL > SWE > UKR > ISR > AUS > MDA *59
 WLD || ISR > FIN > ARM > SWE > ALB > UKR > NOR > HRV > ESP > FRA *254
 
 #These are based on 2023 Jury vote, with half the numbers above.
