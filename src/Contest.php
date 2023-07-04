@@ -12,8 +12,9 @@ class Contest extends Election
     public array $populations = [];
     public array $votingCountries;
     public array $votingGroups = ['Public', 'Jury'];
-    public array $groupBalance = ['Public'=>0.5, 'Jury'=>0.25];
+    public array $groupBalance = ['Public'=>0.5, 'Jury'=>0.5];
     public array $votesbyCountry;
+    public float $typicalPopPerVoter;
     public array $countryNames;
     
     public function parsePopulations()
@@ -40,8 +41,8 @@ class Contest extends Election
 
     protected function registerVote(Vote $vote, array|string|null $tags): Vote
     {
-        if (isset($tags) && array_intersect($this->votingGroups, $tags ?? []) != null) {
-            array_push($tags, 'Public');
+        if (array_intersect($this->votingGroups, $vote->getTags() ?? []) == null) {
+            $vote->addTags('Public');
         }
         $tags === null || $vote->addTags($tags);
         $this->Votes[] = $vote;
@@ -75,6 +76,9 @@ class Contest extends Election
            }
             if ($options['verbose']>=0) echo ("\n");
         }
+
+        $this->typicalPopPerVoter = array_sum(tools::array_multiply($this->votesbyCountry, $this->populations)) / array_sum($this->votesbyCountry);
+
         $this->votesbyCountry['WLD'] = $this->countVotes($this->votingCountries, false);
         if ($options['verbose']>=1) echo("\$minRatio = ".$minRatio."\n");
         
@@ -93,12 +97,5 @@ class Contest extends Election
         foreach ($source->getVotesList($country) as $vote) {
             $this->addVote($vote);
         }
-    }
-    
-    //Get's the n'th largest value in an array.
-    public static function large(array $array, int $rank)
-    {
-        sort($array);
-        return $array[sizeof[$array]-$rank];
     }
 }

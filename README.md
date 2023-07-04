@@ -45,4 +45,6 @@ Narrative mode simulates how the results may be revealed in a Eurovision Song Co
 ## Files
 Here are some files that can be modified to set parameters.
 * `populations.json`: Includes populations of countries. Like other files in this program, countries are written as ISO 3166-1 alpha-3 codes.
+* `voting-countries.json`: Specifies which countries are participating with their own national jury. Public votes may be from outside these countries, but they will be part of the _world_ vote, & automatically tagged `WLD`. Countries are written as ISO 3166-1 alpha-3 codes.
+
 An additional file will later be added to set the balance between public votes, jury votes, and a third group.

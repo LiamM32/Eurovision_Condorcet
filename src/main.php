@@ -12,7 +12,7 @@ use SebastianBergmann\CliParser\Parser;
 
 require_once __DIR__ .'/../vendor/autoload.php';
 
-ini_set('memory_limit', '2048M');
+ini_set('memory_limit', '4096M');
 $stdin = STDIN;
 //const OPTIONS = ['-v', '-n', '-N'];
 $options = ['verbose'=>0, 'Mode'=>'default'];
@@ -51,13 +51,16 @@ if ($options['Mode'] == 'Narrative') {
     $grand_final = $contest->getResult($method)->getResultAsString();
     var_dump($grand_final);
 } else {
-    $grand_final = $contest->getResult('Eurovision Schulze')->getResultAsString();
-    echo("\nResults from the first method:\n");
+    $grand_final = $contest->getResult('Eurovision Schulze 0')->getResultAsString();
+    echo("\nResults from Eurovision Schulze 0:\n");
+    var_dump($grand_final);
+    $grand_final = $contest->getResult('Eurovision Schulze 1')->getResultAsString();
+    echo("\nResults from Eurovision Schulze 1:\n");
     var_dump($grand_final);
     $grand_final_2 = $contest->getResult('Eurovision Schulze 2')->getResultAsString();
-    echo("\nResults from the second method:\n");
+    echo("\nResults from Eurovision Schulze 2:\n");
     var_dump($grand_final_2);
     $Schulze = $contest->getResult('Schulze Margin')->getResultAsString();
-    echo("\nResults from the regular Schulze Method:\n");
+    echo("\nResults from the regular Schulze Margins:\n");
     var_dump($Schulze);
 }

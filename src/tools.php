@@ -4,6 +4,7 @@ namespace EurovisionVoting;
 
 class tools
 {
+    // Get's the n'th largest value in an array.
     public static function large(array $array, int $rank)
     {
         sort($array);
@@ -49,6 +50,16 @@ class tools
     public static function randSelect (array $array) {
         $key = array_rand($array);
         return $array[$key];
+    }
+
+    // Multiplies the values in $array_1 with values of the same keys in $array_2 to get the resulting array.
+    public static function array_multiply (array $array_1, array $array_2, array $filter = null) {
+        $array_result = [];
+        foreach ($filter ?? array_keys($array_1) as $key) {
+            $array_result[$key] = $array_1[$key] * $array_2[$key];
+            echo ($key.' has '.$array_result[$key]." people per voter.\n");
+        }
+        return $array_result;
     }
 }
 
