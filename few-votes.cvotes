@@ -1,16 +1,8 @@
 
-#/Candidates: FIN; SWE; NOR; ISR; ITA; HRV; POL; MDA; ALB; CYP; BEL; ARM; FRA; LTU; SVN; CZE; CHE; EST; AUS; AUT; PRT; SRB; DEU; GBR; ESP
+#/Candidates: FIN; SWE; NOR; UKR; ISR; ITA; HRV; POL; MDA; ALB; CYP; BEL; ARM; FRA; LTU; SVN; CZE; CHE; EST; AUS; AUT; PRT; SRB; DEU; GBR; ESP
 #/Implicit Ranking: true
 
 #Combined with the included populations.json, all countries here should have equal voting weight.
-AUT || FIN > HRV > ITA > NOR > DEU > UKR > SWE > ALB > CHE > ISR *47
-BEL || FIN > SWE > NOR > ITA > ARM > ISR > POL > ALB > FRA > UKR *38
-BGR || AUS > SVN > MDA > LTU > FIN > SWE > FRA > AUT > SRB *64
-CHE || ALB > ITA > FIN > PRT > HRV > SWE > DEU > ISR > NOR > SRB *49
-CZE || UKR > FIN > ISR > NOR > SWE > MDA > HRV > SVN > ARM > ITA *49
-DNK || FIN > NOR > SWE > UKR > BEL > POL > CHE > ITA > CYP > MDA *75
-FIN || NOR > CZE > AUS > SVN > EST > DEU > HRV > MDA > AUT > CHE *82
-GRC || CYP > FIN > SWE > ISR > NOR > ITA > ALB > FRA > ARM > CZE *41
-IRL || FIN > LTU > POL > UKR > SWE > NOR > MDA > BEL > HRV > ISR *85
-SRB || FIN > HRV > SVN > ISR > SWE > NOR > CZE > AUT > ITA > FRA *63
-SWE || FIN > NOR > CHE > BEL > ITA > HRV > UKR > CZE > FRA > AUS *43
+BGR || AUS > SVN > MDA > LTU > FIN > SWE > FRA > AUT > SRB *538
+CHE || FIN > SWE > SRB > LTU > FRA > ALB > SVN > MDA > AUS *410
+SRB || SVN > FIN > LTU > SWE > ALB > FRA > AUS > SRB > AUT *530
