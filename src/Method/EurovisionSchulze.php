@@ -8,22 +8,25 @@ use CondorcetPHP\Condorcet\Algo\Methods\Schulze\Schulze_Core;
 use CondorcetPHP\Condorcet\Election;
 use CondorcetPHP\Condorcet\Result;
 use EurovisionVoting\Contest;
+use EurovisionVoting\Init;
 
 class EurovisionSchulze extends Schulze_Core
 {
     public const METHOD_NAME = ['Eurovision Schulze', 'Eurovision Schulze 0', 'Eurovision_Schulze', 'Eurovision_Schulze_0', 'Grand Final'];
     protected array $filteredPairwise;
     protected array $groupCoefficients;
+    public bool $testMode;
 
-    public function getResult(int $forceNew = 0): Result
+    public function getResult(int $forceNew = 1, bool $testMode = false): Result
     {
         // Cache
         if ($this->Result !== null AND $forceNew == false) {
             return $this->Result;
         }
-        if(!isset($this->filteredPairwise) or $forceNew>=2){
+        if(!isset($this->filteredPairwise) or $forceNew>=2) {
             $this->getAllPairwise($this->getElection());
         }
+        $this->testMode = $testMode;
 
         //if ($forceNew >= true OR $this->voteCount=null) $this->voteTotal = $this->totalVotes();
 
@@ -49,12 +52,12 @@ class EurovisionSchulze extends Schulze_Core
             $this->groupCoefficients[$group] = $contest->groupBalance[$group] / (array_sum($contest->groupBalance)-$contest->groupBalance[$group]);
         }
         $this->filteredPairwise['Public']['WLD'] = $contest->getExplicitFilteredPairwiseByTags('WLD');
-        if ($options['verbose'] > 0) echo("Finished getAllPairwise()\n");
+        if (Init::$options['v'] > 0) echo("Finished getAllPairwise()\n");
     }
 
     public function cacheOnePairwise(string $group, string $country)
     {
-        $this->filteredPairwise[$group][$country] = $this->getElection()->getExplicitFilteredPairwiseByTags([$group,$country]);
+        $this->filteredPairwise[$group][$country] = $this->getElection()->getExplicitFilteredPairwiseByTags([$group,$country], 2);
     }
 
     public function estimateWeights(Contest $contest, array $countries) {
@@ -114,11 +117,14 @@ class EurovisionSchulze extends Schulze_Core
             $groupContributions[$group] *= $contest->groupBalance[$group];
         }
 
+        $one = (int) !$this->testMode; //Typically set to 1
         foreach ($groupMargins as $group=>&$margin) {
-            $margin *= (1+array_sum($groupContributions)-$groupContributions[$group]) * $contest->groupBalance[$group];
+            $margin *= ($one+array_sum($groupContributions)-$groupContributions[$group]) * $contest->groupBalance[$group];
+
+            if ($this->testMode) $margin = round($margin, 9);
         }
 
-        return array_sum($groupMargins) / array_sum($groupContributions); //$netCombinedMargin;
+        return array_sum($groupMargins) / (1 + array_sum($groupContributions)); //$netCombinedMargin;
     }
 
     protected function warpedNationalPublicMargin($iVotes, $jVotes, $population=1): float

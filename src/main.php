@@ -8,17 +8,15 @@ use EurovisionVoting\ContestNarrative;
 use EurovisionVoting\Init;
 use EurovisionVoting\tools;
 
-use SebastianBergmann\CliParser\Parser;
-
 require_once __DIR__ .'/../vendor/autoload.php';
 
 ini_set('memory_limit', '4096M');
 $stdin = STDIN;
-//const OPTIONS = ['-v', '-n', '-N'];
-$options = ['verbose'=>0, 'Mode'=>'default'];
-$optCount = 0;
+
 Init::settings($argv);
 Init::registerMethods();
+$options = &Init::$options;
+$optCount = &Init::$optCount;
 
 //public $commandOptions = getopt('v', Condorcet::getAuthMethods);
 
@@ -28,7 +26,7 @@ if (!isset($argv[1+$optCount])) {
 }
 
 $votesdata = new CondorcetElectionFormat($argv[1+$optCount]);
-if ($options['Mode'] == 'Narrative') {
+if ($options['mode'] == 'Narrative') {
     $contest = new ContestNarrative;
 } else {
     $contest = new Contest;
@@ -39,28 +37,29 @@ $contest->readData();
 
 $contest->countVotersByCountry();
 
-echo('The entire contest has '.$contest->countVotes()." votes.\n");
+if ($options['v'] >= 0) echo('The entire contest has '.$contest->countVotes()." votes.\n");
 
 //new resultsNarrative($contest, 'Eurovision Schulze');
-$method = $argv[2 + $optCount] ?? null /*?? 'Eurovision Schulze'*/;
-if ($options['Mode'] == 'Narrative') {
+$method = $argv[2+$optCount] ?? null /*?? 'Eurovision Schulze'*/;
+if ($options['mode'] == 'Narrative') {
     echo("Doing narrative mode.\n");
     usleep(400000);
     $contest->playResultsNarrative('Eurovision Schulze');
 } elseif (isset($method)) {
-    $grand_final = $contest->getResult($method)->getResultAsString();
-    var_dump($grand_final);
+    $result_string = $contest->getResult($method)->getResultAsString();
+    if ($options['v']>=0) echo("\nResults for ".$method."\n");
+    echo($result_string."\n");
 } else {
-    $grand_final = $contest->getResult('Eurovision Schulze 0')->getResultAsString();
+    $result_string = $contest->getResult('Eurovision Schulze 0')->getResultAsString();
     echo("\nResults from Eurovision Schulze 0:\n");
-    var_dump($grand_final);
-    $grand_final = $contest->getResult('Eurovision Schulze 1')->getResultAsString();
+    echo($result_string."\n");
+    $result_string = $contest->getResult('Eurovision Schulze 1')->getResultAsString();
     echo("\nResults from Eurovision Schulze 1:\n");
-    var_dump($grand_final);
-    $grand_final_2 = $contest->getResult('Eurovision Schulze 2')->getResultAsString();
+    echo($result_string."\n");
+    $result_string_2 = $contest->getResult('Eurovision Schulze 2')->getResultAsString();
     echo("\nResults from Eurovision Schulze 2:\n");
-    var_dump($grand_final_2);
+    echo($result_string_2."\n");
     $Schulze = $contest->getResult('Schulze Margin')->getResultAsString();
     echo("\nResults from the regular Schulze Margins:\n");
-    var_dump($Schulze);
+    echo($Schulze."\n");
 }

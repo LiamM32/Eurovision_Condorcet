@@ -57,7 +57,6 @@ class tools
         $array_result = [];
         foreach ($filter ?? array_keys($array_1) as $key) {
             $array_result[$key] = $array_1[$key] * $array_2[$key];
-            echo ($key.' has '.$array_result[$key]." people per voter.\n");
         }
         return $array_result;
     }

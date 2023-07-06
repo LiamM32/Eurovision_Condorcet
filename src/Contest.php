@@ -4,6 +4,8 @@ namespace EurovisionVoting;
 
 use CondorcetPHP\Condorcet\Condorcet;
 use CondorcetPHP\Condorcet\Election;
+use CondorcetPHP\Condorcet\Result;
+use CondorcetPHP\Condorcet\Timer\Chrono as Timer_Chrono;
 use CondorcetPHP\Condorcet\Vote;
 use EurovisionVoting\countrydata;
 
@@ -27,8 +29,6 @@ class Contest extends Election
             }
         }
         $this->populations = array_intersect_key($this->populations, array_flip($this->votingCountries));
-        //echo ("Here are the populations of voting countries:\n");
-        //var_dump($this->populations);
         
         return $this->populations;
     }
@@ -53,8 +53,6 @@ class Contest extends Election
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
     public function countVotersByCountry()
     {
-        global $options;
-
         $ratioPopulationVote = [];
         $minRatio = 1000000.0;
         $minRatioCountry = '';
@@ -62,25 +60,27 @@ class Contest extends Election
         foreach ($this->votingCountries as $key=>$country)
         {
            $this->votesbyCountry[$country] = $this->countVotes($country);
-           if ($options['verbose']>=0) echo($country.' has '. $this->votesbyCountry[$country]." voters. ");
+           if (Init::$options['v']>=0) echo($country.' has '. $this->votesbyCountry[$country]." voters. ");
            $totalVotingPower = ($this->votesbyCountry[$country]*$this->populations[$country])**(1/3);
            if ($this->votesbyCountry[$country] === 0) {
                unset($this->votingCountries[$key]);
-               if ($options['verbose']>=0) echo("Removed from voting countries list");
+               if (Init::$options['v']>=0) echo("Removed from voting countries list.\n");
            } elseif ($totalVotingPower / $this->votesbyCountry[$country] < $minRatio) {
                $minRatio = $totalVotingPower/$this->votesbyCountry[$country];
                $minRatioCountry = $country;
-               if ($options['verbose']>=1) echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               if (Init::$options['v']>=1) echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
            } else {
-               if ($options['verbose']>=1) echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               if (Init::$options['v']>=1) echo($country.' has '.($totalVotingPower/$this->votesbyCountry[$country])." voting weight per voter.\n");
+               elseif (Init::$options['v']>=0) echo ("\n");
            }
-            if ($options['verbose']>=0) echo ("\n");
+            //if (Init::$options['v']>=0) echo ("\n");
         }
 
         $this->typicalPopPerVoter = array_sum(tools::array_multiply($this->votesbyCountry, $this->populations)) / array_sum($this->votesbyCountry);
+        if (Init::$options['v']>=1) echo ('Typical population per voter in voting countries is '.$this->typicalPopPerVoter."\n");
 
         $this->votesbyCountry['WLD'] = $this->countVotes($this->votingCountries, false);
-        if ($options['verbose']>=1) echo("\$minRatio = ".$minRatio."\n");
+        if (Init::$options['v']>=1) echo("\$minRatio = ".$minRatio."\n");
         
         $this->populations['WLD'] = $this->countVotes($this->votingCountries, false) * array_sum($this->populations) / $this->countVotes($this->votingCountries);
     }
@@ -97,5 +97,21 @@ class Contest extends Election
         foreach ($source->getVotesList($country) as $vote) {
             $this->addVote($vote);
         }
+    }
+
+    public function getResult(string $method = null, array $options = []) : Result
+    {
+        $chrono = (Condorcet::$UseTimer === true) ? new Timer_Chrono($this->timer) : null;
+        $method = Condorcet::getMethodClass($method);
+
+        $this->preparePairwiseAndCleanCompute();
+
+        $this->initResult($method);
+
+        $forceNew = $options['forceNew'] ?? 1;
+        $testMode = $options['testMode'] ?? false;
+
+        ($chrono !== null) && $chrono->setRole('GetResult for '.$method);
+        return $this->Calculator[$method]->getResult($forceNew, $testMode, $options);
     }
 }

@@ -7,9 +7,10 @@ namespace EurovisionVoting\Tests\Method;
 //use CondorcetPHP\Condorcet\Tools\Randomizers\VoteRandomizer;
 use EurovisionVoting\Contest;
 use EurovisionVoting\Init;
+use EurovisionVoting\Method\EurovisionSchulze;
 use PHPUnit\Framework\TestCase;
 
-use function PHPUnit\Framework\assertTrue;
+const BACKSPACE6 = "\b\b\b\b\b\b";
 
 final class EurovisionSchulzeTest extends TestCase
 {
@@ -36,9 +37,18 @@ final class EurovisionSchulzeTest extends TestCase
             Jury, FRA   || SWE > FIN > CHE *2
             Public, DEU || FIN > SWE > CHE *64
             Public, FRA || FIN > SWE > CHE *64
-            Public, EST || FIN > SWE > CHE *2
         ');
-        $result = $this->contest->getResult('Eurovision Schulze 0');
+        $method = new EurovisionSchulze($this->contest);
+
+        $result = $this->contest->getResult('Eurovision Schulze 0', ['testMode'=>true]);
+        self::assertSame('FIN = SWE > CHE', $result->getResultAsString());
+
+        $result = $this->contest->getResult('Eurovision Schulze 0', ['testMode'=>false]);
         self::assertSame('FIN > SWE > CHE', $result->getResultAsString());
+
+        $this->contest->parseVotes('Public, DEU || SWE > FIN > CHE *24');
+        $result = $this->contest->getResult('Eurovision Schulze 0', ['testMode'=>true]);
+        self::assertSame('SWE > FIN > CHE', $result->getResultAsString());
+
     }
 }

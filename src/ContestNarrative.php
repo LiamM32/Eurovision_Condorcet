@@ -5,16 +5,22 @@ namespace EurovisionVoting;
 use CondorcetPHP\Condorcet\Condorcet;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
+use EurovisionVoting\Init;
 
 class ContestNarrative extends Contest
 {
-    protected static int $speakSpeed = 0;//24;
+    protected static int $speakSlowness = 24;
     protected int $writeSpeed = 2500000;
-    protected int $waitSpeed = 2;
+    protected static int $waitSpeed = 1;
 
     public function playResultsNarrative (string $method) : void
     {
         $this->preparePairwiseAndCleanCompute();
+
+        if (Init::$options['fast'] > 0) {
+            self::$speakSlowness = 5;
+            self::$waitSpeed = 4;
+        }
 
         $method = Condorcet::getMethodClass($method);
         $this->initResult($method);
@@ -22,7 +28,7 @@ class ContestNarrative extends Contest
 
         //$presentationOrder = array_values(array_flip($method->estimateWeights($this, $this->votingCountries)));
         asort($this->votesbyCountry);
-        $presentationOrder = ['HRV']; // array_intersect(array_keys($this->votesbyCountry), $this->votingCountries);
+        $presentationOrder = ['SMR', 'ALB', 'CYP']; // array_intersect(array_keys($this->votesbyCountry), $this->votingCountries);
         $probabilities = []; //tools::array_reciprocal($this->votesbyCountry, rand(1,6));
         $totalVotes = $this->countVotes();
         foreach ($this->votingCountries as $country) {
@@ -34,63 +40,73 @@ class ContestNarrative extends Contest
             array_push($presentationOrder, $country);
             unset ($probabilities[$country]);
         }
-        unset ($propabilities, $votes, $totalVotes);
+        unset ($propabilities, $votes, $totalVotes, $country);
 
         self::speak("\nHost: ", tools::randSelect(['',"It's that time now."])." Who wants to ".tools::randSelect(['see','hear','know'])." the results to this year's Eurovision Song Contest?");
-        usleep(rand(3,8) * 100000);
+        self::msleep(rand(3,8) * 100);
         self::write(0, "\n[crowd cheers]\n");
-        usleep(rand(4,8) * 200000);
+        self::msleep(rand(4,8) * 200);
         self::speak("\nHost:", tools::randSelect(['Just what I thought. B', 'I thought so, but b', "That's what I love to hear. But b", 'B'])."efore we announce the results, we will".tools::randSelect([' ',' first '])."hear from the Executive Supervisor of the Eurovision Song Contest; Martin Osterdahl.\n");
-        usleep(rand(6,12) * 250000);
+        self::msleep(rand(6,12) * 250);
         self::speak("\nMartin Osterdahl:", "We have checked and verified all of the votes from the ".count($this->votingCountries)." national juries. And with that, the presentation of the results is good to go.\n");
-        usleep(rand(3,6) * 250000);
+        self::msleep(rand(3,6) * 250);
         self::speak("\nHost:", "Here's how it works. We will connect to".tools::randSelect([' ',' the '])."national juries from the ".count($this->votingCountries)." voting countries, and hear their first choice. We will add the votes from each country's national jury and public one country at a time. After each national jury we visit, we will show the updated results using only votes from the countries we have connected to; both public & jury votes. ");
-        usleep(rand(1,3) * 250000);
+        self::msleep(rand(1,3) * 250);
         self::speak('', "Now let's connect to our first national jury.");
-        usleep(rand(3,10) * 250000);
+        self::msleep(rand(3,10) * 250);
         $prevLeaders = [];
-        foreach($presentationOrder as $key=>$country) {
-            self::speak("\nHost:", "We are now connecting to ".$this->countryNames[$country]."\n");
+        foreach($presentationOrder as $key=>$votingCountry) {
+            self::speak("\nHost:", "We are now connecting to ".$this->countryNames[$votingCountry]."\n");
             $time = microtime(true);
             $nationalSimulation = new Contest;
-            $nationalSimulation->votingCountries = [$country];
-            $nationalSimulation->copyContestDataForCountry($this, $country);
+            $nationalSimulation->votingCountries = [$votingCountry];
+            $nationalSimulation->copyContestDataForCountry($this, $votingCountry);
             $nationalWinner = $nationalSimulation->getWinner($method)->getName();
-            usleep(max(1500000 - $time - microtime(true), 20000));
+            self::msleep(max(1500 - $time - microtime(true), 20));
             self::silence();
             if(rand(0,1) == 1) { self::silence(); }
             $time = microtime(true);
-            if (self::isInFrench($country)) {
-                self::speak("\nPresenter from ".$this->countryNames[$country].": ","Bonsoir Europa. Notre premier choix va ");
-                self::silence();  self::write(8, self::FrenchGrammar($nationalWinner)."!\n\n");
+            if (self::isInFrench($votingCountry)) {
+                self::speak("\nPresenter from ".$this->countryNames[$votingCountry].": ","Bonsoir Europa. Notre premier choix va ");
+                self::silence();  self::write(8, self::FrenchGrammar($nationalWinner)."!\n");
             } else {
-                self::speak("\nPresenter from " . $this->countryNames[$country] . ": ", "Good evening, Europe. Our first choice goes to ");
-                if ($country === 'CYP' /*0R $country === 'GRC'*/) {
+                self::speak("\nPresenter from " . $this->countryNames[$votingCountry] . ": ", "Good evening, Europe. Our first choice goes to ");
+                if ($votingCountry === 'CYP' /*0R $votingCountry === 'GRC'*/) {
                     $this->sayGreeece();
-                    usleep(rand(10, 100) * 10000);
+                    self::msleep(rand(10, 100) * 10);
                 } else {
                     self::silence();
                 }
-                self::write(8, $nationalWinner . "!\n\n");
+                self::write(8, countrydata::replaceInString($nationalWinner) . "!\n");
             }
             unset($nationalSimulation);
 
-            $votingMethod->cacheOnePairwise('Jury', $country);
-            $votingMethod->cacheOnePairwise('Public', $country);
+            $votingMethod->cacheOnePairwise('Jury', $votingCountry);
+            $votingMethod->cacheOnePairwise('Public', $votingCountry);
             self::speak("\nHost:", "Now let's see ".tools::randSelect(['the','our'])." results so far.\n\n");
-            usleep(rand(20,80)*10000);
-            $currentStanding = $votingMethod->getResult(true);
-            self::write(5, $currentStanding->getResultAsString()); usleep(250000);
+            self::msleep(rand(20,80)*10);
+            $currentStanding = $votingMethod->getResult(1);
+            self::write(5, $currentStanding->getResultAsString()); self::msleep(250);
             self::write(16, "\n\nMargin from leaders:");
-            $leader = $currentStanding->getWinner()->getName();
+            $leader = $currentStanding->getWinner();
+            if (gettype($leader) == 'array') {
+                $isTie = true;
+                $secondLeader = $leader[1]->getName();
+                $leader = $leader[0]->getName();
+            } else {
+                $isTie = false;
+                $leader = $leader->getName();
+            }
             $rankings = tools::flatten($currentStanding->getResultAsArray(true));
             foreach ($rankings as $country) {
-                $margin = ($currentStanding->getStats()[$country][$leader]??0) - ($currentStanding->getStats()[$leader][$country]??0);
+                if ($country == $leader) $margin = 0;
+                else $margin = ($currentStanding->getStats()[$country][$leader]??0) - ($currentStanding->getStats()[$leader][$country]??0);
                 self::write(0, "\n".self::evenSpace(40, $this->countryNames[$country]).":\t".round($margin, 3) );
             }
-            sleep(1);
+            self::msleep(1000);
             self::write(0,"\n");
-            if ($leader !== end($prevLeaders)) {
+            if ($isTie) self::speak("\nHost: ", $leader.' and '.$secondLeader." are currently in the lead. \n");
+            elseif ($leader !== end($prevLeaders)) {
                 if (in_array($leader, $prevLeaders)) {
                     self::speak("\nHost: ", $leader.tools::randSelect([' is once again in', ' has returned to'])." the lead.\n");
                 } else {
@@ -98,33 +114,33 @@ class ContestNarrative extends Contest
                 }
             }
             //self::speak("\nHost: ","Now onto the next country.");
-            usleep(rand(3,8) * 250000);
+            self::msleep(rand(3,8) * 250);
             array_push($prevLeaders, $leader);
         }
-        self::speak("\nHost:", "Now finally, we add in the world vote. "); usleep(250000);
+        self::speak("\nHost:", "Now finally, we add in the world vote. "); self::msleep(250);
         self::speak('', "Who may our winner be?\n");
         self::silence();
         $finalResult = $votingMethod->getResult(2);
-        self::write(5, $finalResult->getResultAsString()); usleep(250000);
+        self::write(5, $finalResult->getResultAsString()); self::msleep(250);
         self::write(16, "\n\nMargin from leaders:");
         $winner = $currentStanding->getWinner()->getName();
         $rankings = tools::flatten($finalResult->getResultAsArray(true));
         foreach ($rankings as $country) {
-            $margin = ($rankings->getStats()[$country][$leader] ?? 0) - ($currentStanding->getStats()[$leader][$country] ?? 0);
+            $margin = ($currentStanding->getStats()[$country][$leader] ?? 0) - ($currentStanding->getStats()[$leader][$country] ?? 0);
             self::write(0, "\n" . self::evenSpace(40, $this->countryNames[$country]) . ":\t" . round($margin, 3));
         }
-        usleep(rand(4,20)*20000);
-        self::speak("\n\nHost:", "It's ".$winner."! ");  usleep(rand(4,20)*20000);
-        self::speak('', $winner." has won the Eurovision Song Contest! ");  usleep(rand(4,20)*20000);
+        self::msleep(rand(4,20)*20);
+        self::speak("\n\nHost:", "It's ".$this->countryNames[$winner]."! ");  self::msleep(rand(4,20)*20);
+        self::speak('', $this->countryNames[$winner]." has won the Eurovision Song Contest! ");  self::msleep(rand(4,20)*20);
         if (rand(1,5)>2) self::speak('', "What a ".tools::randSelect(['wonderful','spectacular']).' '.tools::randSelect(['evening','night']));
     }
 
     public static function write (int $slowness, string $message) {
         $strArray = str_split($message);
         foreach ($strArray as $char) {
-            //$utime = microtime(true);
+            $utime = microtime(true);
             echo($char);
-            usleep($slowness * 1000 /*- (microtime(true)-$utime)*/);
+            self::msleep($slowness - (microtime(true)-$utime));
         }
     }
 
@@ -132,31 +148,31 @@ class ContestNarrative extends Contest
         //$message = countrydata::replaceInString($message);
         self::write(4, $speaker);
         if ($speaker != '') echo ("\t");
-        self::write(self::$speakSpeed, $message);
+        self::write(self::$speakSlowness, $message);
     }
 
     public static function silence () {
-        usleep(rand(30, 60)*10000);
+        self::msleep(rand(30, 60)*10);
         for($i=0; $i<3; $i++) {
-            usleep(250000);
+            self::msleep(250);
             echo('. ');
         }
-        usleep(250000);
+        self::msleep(250);
         for($i=0; $i<3; $i++) {
-            usleep(250000);
+            self::msleep(250);
             echo(chr(8).chr(8));
         }
-        usleep(rand(20, 100)*10000);
+        self::msleep(rand(20, 100)*10);
     }
 
     protected static function sayGreeece() {
-        usleep(rand(15,40)*10000);
+        self::msleep(rand(15,40)*10);
         self::write(4, "\nAudience:");
         self::write(15, "\tGr");
-        self::write((self::$speakSpeed)+10, 'eeeeece ');
+        self::write((self::$speakSlowness)+10, 'eeeeece ');
         echo(chr(8).chr(8).chr(8).chr(8).chr(8));
         self::write(0, "ce!\n");
-        usleep(rand(10,20)*10000);
+        self::msleep(rand(10,20)*10);
     }
 
     public static function FrenchGrammar(string $string)
@@ -167,7 +183,7 @@ class ContestNarrative extends Contest
         } else {
             $string = 'au '.$string;
         }
-        return string;
+        return $string;
     }
 
     public static function isInFrench(string $country)
@@ -194,5 +210,19 @@ class ContestNarrative extends Contest
             $string .= ' ';
         }
         return $string;
+    }
+
+    public static function msleep (int $milliseconds)
+    {
+        usleep($milliseconds * 1000 / self::$waitSpeed);
+    }
+
+    protected function leaderName ($leader) {
+        if (gettype($leader) == 'array') {
+            $leader = $leader[array_rand($leader)];
+        }
+        $name = $leader->getName();
+        if (gettype($name) == 'array') $name = $name[0];
+        return $name;
     }
 }
