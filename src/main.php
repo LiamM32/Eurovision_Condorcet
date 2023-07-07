@@ -32,9 +32,9 @@ if ($options['mode'] == 'Narrative') {
     $contest = new Contest;
 }
 $votesdata->setDataToAnElection($contest);
+$contest->groupBalance = Init::parseGroupBalance($argv[1+$optCount]);
 $contest->parsePopulations();
 $contest->readData();
-
 $contest->countVotersByCountry();
 
 if ($options['v'] >= 0) echo('The entire contest has '.$contest->countVotes()." votes.\n");

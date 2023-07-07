@@ -76,7 +76,7 @@ class Contest extends Election
             //if (Init::$options['v']>=0) echo ("\n");
         }
 
-        $this->typicalPopPerVoter = array_sum(tools::array_multiply($this->votesbyCountry, $this->populations)) / array_sum($this->votesbyCountry);
+        $this->typicalPopPerVoter = array_sum(tools::array_multiply($this->votesbyCountry, $this->populations)) / array_sum(tools::array_multiply($this->votesbyCountry));
         if (Init::$options['v']>=1) echo ('Typical population per voter in voting countries is '.$this->typicalPopPerVoter."\n");
 
         $this->votesbyCountry['WLD'] = $this->countVotes($this->votingCountries, false);

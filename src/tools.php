@@ -53,8 +53,9 @@ class tools
     }
 
     // Multiplies the values in $array_1 with values of the same keys in $array_2 to get the resulting array.
-    public static function array_multiply (array $array_1, array $array_2, array $filter = null) {
+    public static function array_multiply (array $array_1, array $array_2 = null, array $filter = null) {
         $array_result = [];
+        $array_2 = $array_2 ?? $array_1;
         foreach ($filter ?? array_keys($array_1) as $key) {
             $array_result[$key] = $array_1[$key] * $array_2[$key];
         }
