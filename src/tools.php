@@ -37,6 +37,7 @@ class tools
         return $return;
     }
 
+    // Like the standard count() but doesn't throw errors. Returns 0 for null and empty arrays, and 1 for non-array data types.
     public static function count ($input) {
         if ($input = NULL OR []) {
             return 0;
@@ -47,12 +48,13 @@ class tools
         }
     }
 
+    // Like array_rand(), but returns a value instead of a key.
     public static function randSelect (array $array) {
         $key = array_rand($array);
         return $array[$key];
     }
 
-    // Multiplies the values in $array_1 with values of the same keys in $array_2 to get the resulting array.
+    // Multiplies the values in $array_1 with values of the same keys in $array_2 to get the resulting array, or squares the values of $array_1 if there is no $array_2.
     public static function array_multiply (array $array_1, array $array_2 = null, array $filter = null) {
         $array_result = [];
         $array_2 = $array_2 ?? $array_1;

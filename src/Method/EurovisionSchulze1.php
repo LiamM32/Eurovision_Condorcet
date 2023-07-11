@@ -10,7 +10,7 @@ use EurovisionVoting\Contest;
 
 class EurovisionSchulze1 extends EurovisionSchulze
 {
-    public const METHOD_NAME = ['Eurovision Schulze 1', 'Eurovision_Schulze_1', 'Grand Final 1.5 root'];
+    public const METHOD_NAME = ['Eurovision Schulze 1', 'Eurovision_Schulze_1', 'Grand Final 1'];
 
     protected function warpedNationalPublicMargin($iVotes, $jVotes, $population=1): float
     {

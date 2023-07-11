@@ -37,23 +37,5 @@ class Init {
         Condorcet::addMethod(EurovisionSchulze2::class);
         // Condorcet::addMethod(EurovisionSchulze3::class);
     }
-
-    public static function parseGroupBalance($filepath): array {
-        $file = file($filepath);
-        $groupBalance = [];
-        foreach ($file as $line) {
-            $line = str_ireplace('Group balance', 'Groups', $line);
-            if (preg_match('/^#\/Groups:(?<groups>.+)$/mi', $line, $string)) {
-                $string = $string['groups'];
-                $groups = explode(';', $string,);
-                foreach($groups as $group) {
-                    $pair = explode("=", $group, 3);
-                    $groupBalance[trim($pair[0])] = floatval($pair[1]);
-                }
-
-            }
-        }
-        return $groupBalance;
-    }
 }
 

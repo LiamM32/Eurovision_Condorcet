@@ -2,47 +2,49 @@
 #Tags represent the country that the voter is from in 3-character country codes.
 
 #/Candidates: ALB; ARM; AUS; AUT; BEL; CHE; CYP; CZE; DEU; ESP; EST; FIN; FRA; GBR; HRV; ISR; ITA; LTU; MDA; NOR; POL; PRT; SRB; SVN; SWE; UKR
+#/Group balance: Public=0.5; Jury=0.5
+#/Weight Allowed: true
 #/Implicit Ranking: true
 
 #These are based on the 2023 Public vote, with 1% of each countries population voting (& 0.1% of World).
-ALB || ITA > SWE > HRV > CYP > FIN > ISR > NOR > FRA > SVN > POL *35
-ARM || ISR > FRA > CYP > SWE > FIN > POL > NOR > ITA > CHE > UKR *34
-AUS || FIN > SWE > CYP > AUT > NOR > ISR > HRV > BEL > FRA > SVN *197
-AUT || FIN > HRV > ITA > NOR > DEU > UKR > SWE > ALB > CHE > ISR *86
-AZE || ISR > SWE > FIN > UKR > CYP > SVN > ITA > CZE > NOR > CHE *98
-BEL || FIN > SWE > NOR > ITA > ARM > ISR > POL > ALB > FRA > UKR *102
-HRV || SVN > FIN > ITA > SRB > ALB > NOR > ISR > CZE > SWE > MDA *68
-CYP || ISR > UKR > SWE > FIN > ITA > NOR > ARM > FRA > POL > MDA *18
-CZE || UKR > FIN > ISR > NOR > SWE > MDA > HRV > SVN > ARM > ITA *96
-DNK || FIN > NOR > SWE > UKR > BEL > POL > CHE > ITA > CYP > MDA *59
-EST || FIN > SWE > UKR > NOR > AUS > LTU > CHE > POL > ITA > SVN *18
-FIN || NOR > CZE > AUS > SVN > EST > DEU > HRV > MDA > AUT > CHE *55
-FRA || ARM > ISR > MDA > ITA > FIN > PRT > UKR > SWE > BEL > NOR *407
-GEO || ARM > UKR > FIN > SWE > ISR > ITA > LTU > MDA > NOR > HRV *42
-DEU || FIN > ITA > ALB > UKR > HRV > NOR > POL > CHE > BEL > SWE *498
-GRC || CYP > FIN > SWE > ISR > NOR > ITA > ALB > FRA > ARM > CZE *96
-ISL || FIN > SWE > NOR > POL > BEL > HRV > FRA > AUS > UKR > ITA *7
-IRL || FIN > LTU > POL > UKR > SWE > NOR > MDA > BEL > HRV > ISR *53
-ISR || FIN > NOR > UKR > ITA > HRV > MDA > SWE > ARM > CZE > FRA *81
-ITA || MDA > NOR > UKR > ALB > FIN > ISR > HRV > SWE > CZE > CHE *379
-LVA || FIN > LTU > SWE > UKR > EST > ISR > HRV > NOR > SVN > CZE *24
-LTU || FIN > UKR > POL > SWE > ITA > EST > HRV > ISR > MDA > FRA *33
-MLT || ITA > SWE > FIN > NOR > ISR > UKR > GBR > ALB > SRB > FRA *9
-MDA || UKR > ISR > SWE > FIN > NOR > ITA > POL > CYP > ARM > CZE *33
-NLD || FIN > BEL > SWE > NOR > ISR > EST > AUT > ITA > POL > AUS *144
-NOR || FIN > SWE > FRA > ITA > POL > CHE > BEL > ISR > CYP > UKR *56
-POL || UKR > FIN > NOR > SWE > HRV > ISR > CYP > CZE > SVN > LTU *272
-PRT || UKR > FIN > MDA > SWE > ITA > ISR > NOR > ESP > FRA > BEL *94
-ROU || MDA > FIN > SWE > ITA > ISR > NOR > UKR > FRA > SVN > CYP *157
-SMR || FIN > ISR > SWE > ITA > UKR > CYP > NOR > MDA > LTU > POL *1
-SRB || FIN > HRV > SVN > ISR > SWE > NOR > CZE > AUT > ITA > FRA *69
-SVN || HRV > FIN > ITA > ALB > SRB > NOR > SWE > FRA > BEL > POL *26
-ESP || FIN > UKR > NOR > ISR > ITA > SWE > PRT > BEL > ARM > MDA *324
-SWE || FIN > NOR > CHE > BEL > ITA > HRV > UKR > CZE > FRA > AUS *92
-CHE || ALB > ITA > FIN > PRT > HRV > SWE > DEU > ISR > NOR > SRB *83
-UKR || POL > FIN > HRV > NOR > MDA > GBR > LTU > SWE > CZE > ISR *312
-GBR || FIN > LTU > POL > NOR > BEL > SWE > UKR > ISR > AUS > MDA *83
-WLD || ISR > FIN > ARM > SWE > ALB > UKR > NOR > HRV > ESP > FRA *478
+ALB || ITA > SWE > HRV > CYP > FIN > ISR > NOR > FRA > SVN > POL ^9.1 *28
+ARM || ISR > FRA > CYP > SWE > FIN > POL > NOR > ITA > CHE > UKR ^9 *28
+AUS || FIN > SWE > CYP > AUT > NOR > ISR > HRV > BEL > FRA > SVN ^27.2 *82
+AUT || FIN > HRV > ITA > NOR > DEU > UKR > SWE > ALB > CHE > ISR ^16.1 *49
+AZE || ISR > SWE > FIN > UKR > CYP > SVN > ITA > CZE > NOR > CHE ^17.6 *53
+BEL || FIN > SWE > NOR > ITA > ARM > ISR > POL > ALB > FRA > UKR ^17.9 *55
+HRV || SVN > FIN > ITA > SRB > ALB > NOR > ISR > CZE > SWE > MDA ^14 *42
+CYP || ISR > UKR > SWE > FIN > ITA > NOR > ARM > FRA > POL > MDA ^6.1 *19
+CZE || UKR > FIN > ISR > NOR > SWE > MDA > HRV > SVN > ARM > ITA ^17.2 *53
+DNK || FIN > NOR > SWE > UKR > BEL > POL > CHE > ITA > CYP > MDA ^12.7 *39
+EST || FIN > SWE > UKR > NOR > AUS > LTU > CHE > POL > ITA > SVN ^5.9 *19
+FIN || NOR > CZE > AUS > SVN > EST > DEU > HRV > MDA > AUT > CHE ^12.3 *37
+FRA || ARM > ISR > MDA > ITA > FIN > PRT > UKR > SWE > BEL > NOR ^42.9 *129
+GEO || ARM > UKR > FIN > SWE > ISR > ITA > LTU > MDA > NOR > HRV ^10.3 *31
+DEU || FIN > ITA > ALB > UKR > HRV > NOR > POL > CHE > BEL > SWE ^48.8 *146
+GRC || CYP > FIN > SWE > ISR > NOR > ITA > ALB > FRA > ARM > CZE ^17.5 *52
+ISL || FIN > SWE > NOR > POL > BEL > HRV > FRA > AUS > UKR > ITA ^3.3 *10
+IRL || FIN > LTU > POL > UKR > SWE > NOR > MDA > BEL > HRV > ISR ^12.1 *36
+ISR || FIN > NOR > UKR > ITA > HRV > MDA > SWE > ARM > CZE > FRA ^15.7 *47
+ITA || MDA > NOR > UKR > ALB > FIN > ISR > HRV > SWE > CZE > CHE ^41.1 *123
+LVA || FIN > LTU > SWE > UKR > EST > ISR > HRV > NOR > SVN > CZE ^7.3 *22
+LTU || FIN > UKR > POL > SWE > ITA > EST > HRV > ISR > MDA > FRA ^8.9 *27
+MLT || ITA > SWE > FIN > NOR > ISR > UKR > GBR > ALB > SRB > FRA ^3.9 *12
+MDA || UKR > ISR > SWE > FIN > NOR > ITA > POL > CYP > ARM > CZE ^8.7 *27
+NLD || FIN > BEL > SWE > NOR > ISR > EST > AUT > ITA > POL > AUS ^22.5 *67
+NOR || FIN > SWE > FRA > ITA > POL > CHE > BEL > ISR > CYP > UKR ^12.3 *38
+POL || UKR > FIN > NOR > SWE > HRV > ISR > CYP > CZE > SVN > LTU ^33.5 *100
+PRT || UKR > FIN > MDA > SWE > ITA > ISR > NOR > ESP > FRA > BEL ^17 *52
+ROU || MDA > FIN > SWE > ITA > ISR > NOR > UKR > FRA > SVN > CYP ^23.6 *71
+SMR || FIN > ISR > SWE > ITA > UKR > CYP > NOR > MDA > LTU > POL ^1 *3
+SRB || FIN > HRV > SVN > ISR > SWE > NOR > CZE > AUT > ITA > FRA ^13.9 *43
+SVN || HRV > FIN > ITA > ALB > SRB > NOR > SWE > FRA > BEL > POL ^7.5 *24
+ESP || FIN > UKR > NOR > ISR > ITA > SWE > PRT > BEL > ARM > MDA ^37.2 *112
+SWE || FIN > NOR > CHE > BEL > ITA > HRV > UKR > CZE > FRA > AUS ^16.8 *51
+CHE || ALB > ITA > FIN > PRT > HRV > SWE > DEU > ISR > NOR > SRB ^15.9 *48
+UKR || POL > FIN > HRV > NOR > MDA > GBR > LTU > SWE > CZE > ISR ^36.4 *109
+GBR || FIN > LTU > POL > NOR > BEL > SWE > UKR > ISR > AUS > MDA ^15.9 *48
+WLD || ISR > FIN > ARM > SWE > ALB > UKR > NOR > HRV > ESP > FRA ^47.6 *142
 
 #Jury votes from the 2023 Eurovision Song Contest.
 Jury, ALB || SWE>CHE>EST>ITA>CZE>AUS>GBR>PRT>BEL>ESP>FRA>NOR>ISR>SVN>SRB>CYP>ARM>UKR>LTU>HRV>DEU>MDA>POL>AUT>FIN

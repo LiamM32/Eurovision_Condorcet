@@ -49,7 +49,12 @@ class EurovisionSchulze extends Schulze_Core
                 $this->filteredPairwise[$group][$country] = $contest->getExplicitFilteredPairwiseByTags([$group, $country], 2);
             }
 
-            $this->groupCoefficients[$group] = $contest->groupBalance[$group] / (array_sum($contest->groupBalance)-$contest->groupBalance[$group]);
+            if (count($contest->groupBalance) > 1) {
+                $this->groupCoefficients[$group] = $contest->groupBalance[$group] / (array_sum($contest->groupBalance)-$contest->groupBalance[$group]);
+            } else {
+                $this->groupCoefficients[$group] = 1;
+            }
+
         }
         $this->filteredPairwise['Public']['WLD'] = $contest->getExplicitFilteredPairwiseByTags('WLD');
         if (Init::$options['v'] > 0) echo("Finished getAllPairwise()\n");
@@ -107,7 +112,7 @@ class EurovisionSchulze extends Schulze_Core
                 //echo("\n\$country = ".$country.",  \$iCountry = ".$iCountry.",  \$jCountry = ".$jCountry.",  \$rawMargin = ".$rawMargin.",  Votes = ".($iVotes + $jVotes)."\n");
                 if ($iVotes + $jVotes > 0) {
                     if ($iVotes !== $jVotes) {
-                        if ($group === 'Public') $groupMargins['Public'] += $this->warpedNationalPublicMargin($iVotes, $jVotes);
+                        if ($group === 'Public') $groupMargins['Public'] += $this->warpedNationalPublicMargin($iVotes, $jVotes, $contest->populations[$country]);
                         else                        $groupMargins[$group] += $this->warpedNationalJuryMargin($iVotes, $jVotes, $contest->populations[$country]);
                     }
                     if ($group === 'Public') $groupContributions[$group] += $this->warpedNationalPublicMargin($iVotes + $jVotes, 0, $contest->populations[$country]);

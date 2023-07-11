@@ -13,7 +13,6 @@ class Contest extends Election
 {
     public array $populations = [];
     public array $votingCountries;
-    public array $votingGroups = ['Public', 'Jury'];
     public array $groupBalance = ['Public'=>0.5, 'Jury'=>0.5];
     public array $votesbyCountry;
     public float $typicalPopPerVoter;
@@ -41,7 +40,7 @@ class Contest extends Election
 
     protected function registerVote(Vote $vote, array|string|null $tags): Vote
     {
-        if (array_intersect($this->votingGroups, $vote->getTags() ?? []) == null) {
+        if (array_intersect(array_keys($this->groupBalance), $vote->getTags() ?? []) == null) {
             $vote->addTags('Public');
         }
         $tags === null || $vote->addTags($tags);
@@ -88,7 +87,6 @@ class Contest extends Election
     public function copyContestDataForCountry (Contest $source, string $country)
     {
         $this->populations[$country] = $source->populations[$country];
-        $this->votingGroups = $source->votingGroups;
         $this->groupBalance = $source->groupBalance;
         $this->votesbyCountry[$country] = $source->votesbyCountry[$country];
         foreach ($source->getCandidatesList() as $candidate) if($candidate->getName() !== $country) {

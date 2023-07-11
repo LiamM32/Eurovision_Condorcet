@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-use CondorcetPHP\Condorcet\Tools\Converters\CondorcetElectionFormat;
+//use CondorcetPHP\Condorcet\Tools\Converters\CEF\CondorcetElectionFormat;
 use EurovisionVoting\Contest;
 use EurovisionVoting\ContestNarrative;
 use EurovisionVoting\Init;
 use EurovisionVoting\tools;
+use EurovisionVoting\EurovisionCVotesFormat;
 
 require_once __DIR__ .'/../vendor/autoload.php';
 
@@ -25,14 +26,13 @@ if (!isset($argv[1+$optCount])) {
     exit(0);
 }
 
-$votesdata = new CondorcetElectionFormat($argv[1+$optCount]);
+$votesdata = new EurovisionCVotesFormat($argv[1+$optCount]);
 if ($options['mode'] == 'Narrative') {
     $contest = new ContestNarrative;
 } else {
     $contest = new Contest;
 }
-$votesdata->setDataToAnElection($contest);
-$contest->groupBalance = Init::parseGroupBalance($argv[1+$optCount]);
+$votesdata->setDataToContest($contest);
 $contest->parsePopulations();
 $contest->readData();
 $contest->countVotersByCountry();

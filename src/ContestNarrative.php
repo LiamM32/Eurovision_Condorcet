@@ -51,12 +51,12 @@ class ContestNarrative extends Contest
         self::speak("\nMartin Osterdahl:", "We have checked and verified all of the votes from the ".count($this->votingCountries)." national juries. And with that, the presentation of the results is good to go.\n");
         self::msleep(rand(3,6) * 250);
         self::speak("\nHost:", "Here's how it works. We will connect to".tools::randSelect([' ',' the '])."national juries from the ".count($this->votingCountries)." voting countries, and hear their first choice. We will add the votes from each country's national jury and public one country at a time. After each national jury we visit, we will show the updated results using only votes from the countries we have connected to; both public & jury votes. ");
-        self::msleep(rand(1,3) * 250);
+        self::msleep(rand(2,5) * 150);
         self::speak('', "Now let's connect to our first national jury.");
         self::msleep(rand(3,10) * 250);
         $prevLeaders = [];
         foreach($presentationOrder as $key=>$votingCountry) {
-            self::speak("\nHost:", "We are now connecting to ".$this->countryNames[$votingCountry]."\n");
+            self::speak("\nHost:", "We are now connecting to ".$this->countryNames[$votingCountry].".\n");
             $time = microtime(true);
             $nationalSimulation = new Contest;
             $nationalSimulation->votingCountries = [$votingCountry];
@@ -78,6 +78,7 @@ class ContestNarrative extends Contest
                     self::silence();
                 }
                 self::write(8, countrydata::replaceInString($nationalWinner) . "!\n");
+                self::msleep(rand(5, 20) * 50);
             }
             unset($nationalSimulation);
 
@@ -127,7 +128,7 @@ class ContestNarrative extends Contest
         $rankings = tools::flatten($finalResult->getResultAsArray(true));
         foreach ($rankings as $country) {
             $margin = ($currentStanding->getStats()[$country][$leader] ?? 0) - ($currentStanding->getStats()[$leader][$country] ?? 0);
-            self::write(0, "\n" . self::evenSpace(40, $this->countryNames[$country]) . ":\t" . round($margin, 3));
+            echo("\n" . self::evenSpace(40, $this->countryNames[$country]) . ":\t" . round($margin, 3));
         }
         self::msleep(rand(4,20)*20);
         self::speak("\n\nHost:", "It's ".$this->countryNames[$winner]."! ");  self::msleep(rand(4,20)*20);
@@ -141,11 +142,13 @@ class ContestNarrative extends Contest
             $utime = microtime(true);
             echo($char);
             self::msleep($slowness - (microtime(true)-$utime));
+            if ($char==='.') self::msleep(2*$slowness+20);
         }
+        self::msleep($slowness);
     }
 
     public static function speak (string $speaker, string $message) {
-        //$message = countrydata::replaceInString($message);
+        $message = countrydata::replaceInString($message);
         self::write(4, $speaker);
         if ($speaker != '') echo ("\t");
         self::write(self::$speakSlowness, $message);
@@ -169,8 +172,8 @@ class ContestNarrative extends Contest
         self::msleep(rand(15,40)*10);
         self::write(4, "\nAudience:");
         self::write(15, "\tGr");
-        self::write((self::$speakSlowness)+10, 'eeeeece ');
-        echo(chr(8).chr(8).chr(8).chr(8).chr(8));
+        self::write((self::$speakSlowness)+18, 'eeee');
+        echo(chr(8));
         self::write(0, "ce!\n");
         self::msleep(rand(10,20)*10);
     }
