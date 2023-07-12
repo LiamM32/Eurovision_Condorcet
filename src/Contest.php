@@ -52,10 +52,8 @@ class Contest extends Election
     //Gets the number of voters in each participating country, and determines which country has the least influence per-voter.
     public function countVotersByCountry()
     {
-        $ratioPopulationVote = [];
         $minRatio = 1000000.0;
         $minRatioCountry = '';
-        //The population for WLD should be set to $votes['WLD']^2 * $this->populations[max] / ($votes[max])^2, with max being the country with lowest voting power per-capita.
         foreach ($this->votingCountries as $key=>$country)
         {
            $this->votesbyCountry[$country] = $this->countVotes($country);
